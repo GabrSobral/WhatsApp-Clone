@@ -1,0 +1,223 @@
+.Chat{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0.70
+}
+.Chat .chat-header{
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px;
+    background-color: #ededed;
+}
+.Chat .chat-img{
+    min-height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    margin-right: 15px;
+    background-color: rgb(225, 225, 225);
+}
+.Chat .chat-header-name-and-users{
+    width: 100%;
+}
+.Chat .chat-header-name-and-users .chat-name{
+    display: flex;
+    align-items: center;
+    color: rgb(49, 49, 49);
+}
+.Chat .chat-header-name-and-users .chat-last-online{
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    color: rgb(148, 148, 148);
+    font-size: 13px;
+}
+.Chat .search-and-more{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 90px;
+}
+.Chat .search-and-more button{
+    border-radius: 100%;
+    outline: none;
+    height: 43px;
+    width: 43px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.Chat .search-and-more button:hover{
+    background-color: #dcdcdc;
+}
+
+
+.messages{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #dad3cb;
+    padding: 20px 60px;
+    overflow-y: scroll;
+}
+.messages .message-userTwo{
+    z-index: 99;
+    position: relative;
+    width: fit-content;
+    min-width: 180px;
+    max-width: 70%;
+    background-color: #fff;
+    border-radius: 0px 10px 10px 10px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
+    margin: 5px 0px 5px 0px;
+    padding: 10px 70px 10px 10px;
+    
+}
+.messages .message-userTwo .userTwo-message{
+    word-wrap: normal;
+    margin-top: 3px;
+    padding: 0;
+    color: rgb(73, 73, 73);
+}
+.messages .message-userTwo .userTwo-name{
+    font-weight: 600;
+    font-size: 15px;
+    color: rgb(77, 77, 77);
+}
+
+.messages .message-userTwo .arrow-left{
+    position: absolute;
+    left: -8px;
+    top: -4px;
+    height: 15px;
+    width: 15px;
+    color: #fff;
+}
+.messages .message-userTwo .arrow-left svg{
+    width: 8px;
+    height: 13px;
+    fill: #fff
+}
+.messages .message-userTwo .time{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+}
+.messages .message-userOne{
+    z-index: 99;
+    position: relative;
+    width: fit-content;
+    min-width: 200px;
+    max-width: 70%;
+    background-color: #dcf8c6;
+    border-radius: 10px 0px 10px 10px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
+    margin: 5px 0px 5px auto;
+    padding: 10px 95px 10px 10px;
+ 
+}
+.messages .message-userOne .userOne-message{
+    word-wrap: normal;
+    margin-top: 3px;
+    padding: 0;
+    color: rgb(73, 73, 73);
+}
+.messages .message-userOne .userOne-name{
+    font-weight: 600;
+    font-size: 15px;
+    color: rgb(77, 77, 77);
+}
+
+.messages .message-userOne .arrow-right{
+    position: absolute;
+    right: -15px;
+    top: -4px;
+    height: 15px;
+    width: 15px;
+    color: #fff;
+}
+.messages .message-userOne .arrow-right svg{
+    width: 8px;
+    height: 13px;
+    fill: #dcf8c6
+}
+.messages .message-userOne .time-and-receiver{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    bottom: 8px;
+    right: 10px;
+}
+.messages .message-userOne .time-and-receiver svg{
+    width: 17px;
+    height: 17px;
+}
+.messages .message-userOne .time-and-receiver .time{
+    margin-right: 7px;
+    font-size: 12px;
+}
+
+.Chat .write-message{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80px;
+}
+.Chat .write-message form{
+    width: 90%;
+}
+.Chat .write-message form input{
+    margin: auto;
+    width:100%;
+    height: 45px;
+    border-radius: 25px;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    padding: 10px 0px 10px 45px;
+    color: rgb(102, 102, 102);
+}
+.Chat .write-message form button{
+    display: none;
+}
+.react-loading{
+    z-index: 200;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding-top:100px;
+    position: absolute;
+}
+
+.messages .goToDown{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    border: none;
+    outline: none;
+    position: fixed;
+    right: 30px;
+    bottom: 100px;
+    transition: 0.3s ease;
+}
+.messages .goToDown:hover{
+    background-color: #c4c4c4;
+}

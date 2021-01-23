@@ -1,0 +1,199 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0.30;
+    background-color: #ffffff;
+    border-right: 1px solid rgb(209, 209, 209);
+}
+.sidebar-header{
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px;
+    background-color: #ededed;
+}
+.sidebar-header .user-img{
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background-color: rgb(225, 225, 225);
+}
+.sidebar-header .options-header-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 140px;
+}
+.sidebar-header .options-header-container .optionButton {
+    border-radius: 100%;
+    outline: none;
+    height: 43px;
+    width: 43px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.sidebar-header .options-header-container .optionButton:hover{
+    background-color: #dcdcdc;
+}
+.sidebar .search-bar{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 50px;
+    padding: 0px 15px;
+    background-color: #f6f6f6;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(211, 211, 211); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(184, 184, 184); 
+}
+
+.sidebar .search-bar div{
+    position: relative;
+    width: 100%;
+    margin: auto;
+}
+.sidebar .search-bar div svg{
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    pointer-events: none;
+}
+.sidebar .search-bar div input{
+    margin: auto;
+    width:100%;
+    height: 35px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    padding: 10px 0px 10px 45px;
+    color: rgb(148, 148, 148);
+}
+.sidebar .search-bar div input::placeholder{
+    color: rgb(148, 148, 148);
+}
+.sidebar .chats{
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    width: 100%;
+}
+.sidebar .chats .sidebar-chat-user{
+    width: 100%;
+    min-height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid rgb(232, 232, 232);
+    padding: 0px 15px;
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+.sidebar .chats .sidebar-chat-user:hover{
+    background-color: rgb(242, 242, 242);
+}
+.sidebar .chats .side-bar-chat-user-img{
+    min-height: 50px;
+    min-width: 50px;
+    background-color: rgb(225, 225, 225);
+    border-radius: 100%;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar .chats .container-chat{
+    width: 85%;
+}
+.sidebar .chats .container-chat .name-and-time{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.sidebar .chats .container-chat .name-and-time span{
+    white-space: nowrap;
+}
+.sidebar .chats .container-chat .name-and-time .name{
+    color: #000;
+}
+.sidebar .chats .container-chat .name-and-time .time{
+    font-size: 13px;
+}
+.sidebar .chats .container-chat .message-and-counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 5px;
+}
+.sidebar .chats .container-chat .message-and-counter .message-preview{
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.sidebar .chats .container-chat .message-and-counter div{
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: #06d755;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.popupMore {
+    z-index: 99;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    height: fit-content;
+    background-color: #fff;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.213);
+    border-radius: 6px;
+    top: 30px;
+    left: 20px;
+}
+.popupButton {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    border-radius: 0;
+    border: none;
+    height: 40px;
+    transition: 0.3s ease;
+}
+.popupButton:hover{
+    background-color: #dcdcdc;
+}
+
