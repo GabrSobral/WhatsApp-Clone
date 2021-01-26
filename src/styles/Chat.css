@@ -3,7 +3,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 0.70
+    flex: 0.70;
+   
 }
 .Chat .chat-header{
     padding: 5px 15px;
@@ -89,6 +90,7 @@
     margin-top: 3px;
     padding: 0;
     color: rgb(73, 73, 73);
+    word-break: break-word;
 }
 .messages .message-userTwo .userTwo-name{
     font-weight: 600;
@@ -133,6 +135,7 @@
     margin-top: 3px;
     padding: 0;
     color: rgb(73, 73, 73);
+    word-break: break-word;
 }
 .messages .message-userOne .userOne-name{
     font-weight: 600;

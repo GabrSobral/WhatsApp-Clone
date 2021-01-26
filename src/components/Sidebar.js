@@ -15,7 +15,7 @@ const connectionOptions =  {
     "timeout" : 10000,                  
     "transports" : ["websocket"]
   };
-export const socket = io.connect('http://192.168.15.5:3001', connectionOptions);
+export const socket = io.connect('https://chat-api-sobral.herokuapp.com/', connectionOptions);
 
 export default function SidebarAndChat(){
     const [ open, setOpen ] = useState(bool)
