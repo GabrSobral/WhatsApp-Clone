@@ -2,7 +2,7 @@ import { FaWhatsapp } from 'react-icons/fa'
 import styles from './styles.module.scss'
 import Loading from 'react-loading'
 
-export function SignButton( { isFilled, isLoading }){
+export function SignButton( { isFilled, isLoading, title = "Entrar" }){
   return(
     <button 
       type='submit' 
@@ -14,7 +14,7 @@ export function SignButton( { isFilled, isLoading }){
       ) : (
         <>
           <FaWhatsapp size={35} fill='#fff'/>
-          Entrar
+          {title}
         </>
       )}
 

@@ -22,11 +22,26 @@ export function AuthProvider({ children }){
 
     return data
   }
+  async function SignUp(name, email, password){
+    const { data } = await api.post('/users/register', 
+      { name, email, password })
+    
+    login(data.token)
+    setIsAuthenticated(true)
+
+    api.interceptors.request.use(config => {
+      config.headers.authorization = `Bearer ${data.token}`
+      return config
+    })
+
+    return data
+  }
 
   return(
     <AuthContext.Provider
       value={{
         SignIn,
+        SignUp,
         isAuthenticated
       }}
     >

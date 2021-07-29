@@ -61,7 +61,7 @@ export default function SignInPage() {
           <div className={styles.remember_and_forgotPassword}>
 						<div>
 							<input type='checkbox' id={styles.remember}/>
-							<label htmlFor='remember'>Lembrar-se</label>
+							<label htmlFor={styles.remember}>Lembrar-se</label>
 						</div>
 						<Link to=''>Esqueci minha senha</Link>
           </div>
