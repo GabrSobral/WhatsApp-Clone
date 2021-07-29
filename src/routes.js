@@ -1,9 +1,10 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import SidebarAndChat from './components/Sidebar.js'
+
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import { isAuthenticated } from './utils/handleToken.js';
+import { Main } from './pages/Main/index.js';
 
 export default function Routes(){
 
@@ -12,9 +13,9 @@ export default function Routes(){
 			{...rest}
 			render={props =>
 			isAuthenticated() ? (
-					<Render {...props} />
+				<Render {...props} />
 			) : (
-					<Redirect to={{ pathname: "/SignUp", state: { from: props.location } }} />
+				<Redirect to={{ pathname: "/SignUp", state: { from: props.location } }} />
 			)
 			}
 		/>
@@ -23,9 +24,7 @@ export default function Routes(){
 	return(
 		<BrowserRouter>
 			<Switch>
-				<PrivateRoute exact path='/' render={()=>
-						<SidebarAndChat/>
-				}/>
+				<PrivateRoute exact path='/' component={Main}/>
 
 				<Route path='/signUp' component={SignUp}/>
 				<Route path='/signIn' component={SignIn}/>
