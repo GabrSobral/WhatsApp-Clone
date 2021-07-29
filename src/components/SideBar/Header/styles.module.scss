@@ -1,0 +1,80 @@
+.container{
+  padding: 0.3rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+  max-height: 4rem;
+  background-color: #ededed;
+
+  .user_img{
+    height: 2.75rem;
+    width: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background-color: var(--gray-400);
+    overflow: hidden;
+
+    img{
+      height: 2.75rem;
+      width: 2.75rem;
+    }
+  }
+
+  .options_container{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: 0.5rem;
+
+    button{
+      border-radius: 2rem;
+      min-height: 2.5rem;
+      min-width: 2.5rem;
+      background-color: var(--gray-100);
+      border: 0;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover{
+        background-color: var(--gray-400);
+      }
+
+      &:last-child{
+        position: relative;
+
+        .popup_more{
+          z-index: 10000;
+          position: absolute;
+          width: 100px;
+          height: fit-content;
+          display: none;
+          flex-direction: column;
+          background-color: var(--white);
+          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.213);
+          border-radius: 7px;
+          right: 0;
+          top: 2rem;
+          overflow: hidden;
+
+          button{
+            border-radius: 0;
+          }
+        }
+
+        &:focus-within{
+          .popup_more{
+            display: flex;
+
+          }
+        }
+      }
+    }
+  }
+}
