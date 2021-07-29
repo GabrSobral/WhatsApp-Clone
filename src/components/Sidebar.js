@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from 'react'
 import '../styles/Sidebar.css'
 import { MdDonutLarge, MdSpeakerNotes, MdMoreVert, MdSearch, MdPerson } from 'react-icons/md'
 import api from '../services/api.js'
-import { getToken, logout } from '../services/api.js'
 import { Link, useHistory } from 'react-router-dom'
-import { useRoom } from '../context/roomContext.js'
+import { useRoom } from '../contexts/roomContext.js'
 import Chat from './Chat.js'
 import io from "socket.io-client";
+import { getToken, logout } from '../utils/handleToken'
 
 let bool = false
 const connectionOptions =  {

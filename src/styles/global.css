@@ -2,9 +2,18 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Segoe UI,Helvetica Neue,Helvetica,Lucida Grande,Arial,Ubuntu,Cantarell,Fira Sans,sans-serif;
+    font-family: 'Roboto',sans-serif;
     color: rgb(148, 148, 148);
     text-decoration: none;
+}
+
+:root{
+    --white: #ffffff;
+    
+    --gray-400: #d5d5d5;
+    --gray-700: #a9a9a9;
+    
+    --green-500: #51b786;
 }
 
 .App {
