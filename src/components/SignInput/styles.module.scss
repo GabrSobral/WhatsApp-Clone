@@ -12,6 +12,7 @@
     padding: 0 0.3rem;
     transition: 0.2s ease;
     pointer-events: none;
+    color: var(--gray-700);
   }
   &:focus-within{
     span{

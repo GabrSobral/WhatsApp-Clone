@@ -10,6 +10,7 @@ export function SignInput({
     <div className={`${styles.container} ${data && styles.is_filled}`}>
       <span>{title}</span>
       <input 
+      value={data}
         type={type}
         onChange={
           (event) => { 

@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { createContext } from "react";
-import { useContext } from "react/cjs/react.production.min";
-import api from "../services/api";
 import { login } from "../utils/handleToken";
+import api from "../services/api";
 
 const AuthContext = createContext({})
 
@@ -10,7 +9,7 @@ export function AuthProvider({ children }){
   const [ isAuthenticated, setIsAuthenticated ] = useState({})
 
   async function SignIn(email, password){
-    const { data } = await api.post('/users/login', 
+    const { data } = await api.post('/users/authenticate', 
       { email, password })
     
     login(data.token)
