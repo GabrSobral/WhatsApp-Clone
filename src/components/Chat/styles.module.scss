@@ -4,13 +4,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--gray-100);
   justify-content: space-between;
 
   .write_message{
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--gray-100);
     width: 100%;
     height: 80px;
 

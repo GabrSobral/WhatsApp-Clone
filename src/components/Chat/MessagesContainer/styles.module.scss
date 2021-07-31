@@ -4,10 +4,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--gray-400);
+  background-color: transparent;
   padding: 20px 60px;
   overflow-y: scroll;
-  background-image: url('../../../images/background.png');
 
   .user_two{
     z-index: 99;
@@ -18,8 +17,8 @@
     background-color: #fff;
     border-radius: 0px 7px 7px 7px;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
-    margin: 5px 0px 5px 0px;
-    padding: 10px 70px 10px 10px;
+    margin: 2px 0px;
+    padding: 5px 10px;
     
     .arrow_left{
       position: absolute;
@@ -44,8 +43,8 @@
     background-color: #dcf8c6;
     border-radius: 7px 0px 7px 7px;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
-    margin: 5px 0px 5px auto;
-    padding: 10px;
+    margin: 2px 0px 2px auto;
+    padding: 5px 10px;
     padding-bottom: 1.5rem;
 
     .arrow_right{
