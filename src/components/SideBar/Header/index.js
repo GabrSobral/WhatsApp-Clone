@@ -15,10 +15,9 @@ export function Header(){
   const { push } = useHistory()
 
   async function Logout(){
-		await api.patch('/users/logout').then(()=>{
-			logout()
-			push('/SignIn')
-		})
+		await api.patch('/users/logout')
+    logout()
+    push('/SignIn')
 	}
 
   return(
@@ -40,9 +39,9 @@ export function Header(){
           <MdMoreVert size={23} color="#919191"/>
 
           <div className={styles.popup_more}>
-            <button type='button' onClick={Logout}>
+            <div className={styles.button}type='button' onClick={Logout}>
               Desconectar
-            </button>
+            </div>
           </div>
         </button>
       </div>

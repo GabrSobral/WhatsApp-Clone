@@ -50,7 +50,7 @@
         position: relative;
 
         .popup_more{
-          z-index: 10000;
+          z-index: 99;
           position: absolute;
           width: 100px;
           height: fit-content;
@@ -63,8 +63,18 @@
           top: 2rem;
           overflow: hidden;
 
-          button{
+          .button{
+            cursor: pointer;
+            z-index: 99;
+            padding: 1rem;
             border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover{
+              filter: brightness(0.8);
+            }
           }
         }
 
