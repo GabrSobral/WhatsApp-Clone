@@ -32,10 +32,13 @@ export default function SignInPage() {
 			await SignIn(email, password)
 			setIsLoading(false)
 			history.push('/')
+			return
 		} catch(error){
+			console.log(error.response.data)
 			setWarning(error.response.data.error)
 			setPassword('')
 			setIsLoading(false)
+			return
 		}
   }
   return(
