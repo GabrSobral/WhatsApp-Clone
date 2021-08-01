@@ -1,0 +1,61 @@
+.user_one{
+  z-index: 99;
+  position: relative;
+  width: fit-content;
+  min-width: 200px;
+  max-width: 70%;
+  background-color: #dcf8c6;
+  border-radius: 7px 0px 7px 7px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
+  margin: 2px 0px 2px auto;
+  padding: 5px 10px;
+  padding-bottom: 1.5rem;
+
+  .arrow_right{
+    position: absolute;
+    right: -15px;
+    top: -2px;
+    height: 15px;
+    width: 15px;
+    color: #fff;
+
+    svg{
+      width: 8px;
+      height: 13px;
+      fill: #dcf8c6
+    }
+  }
+
+  .time_and_receiver{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    bottom: 8px;
+    right: 10px;
+
+    .time{
+      position: relative;
+      bottom: 0;
+    }
+
+    svg{
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
+.message{
+  word-wrap: normal;
+  margin-top: 3px;
+  padding: 0;
+  color: rgb(73, 73, 73);
+  word-break: break-word;
+}
+.time{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 12px;
+}

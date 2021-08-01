@@ -1,0 +1,33 @@
+.write_message{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray-100);
+  width: 100%;
+  height: 80px;
+
+  form{
+    width: 100%;
+    padding: 0 1rem;
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    input{
+      margin: auto;
+      width:100%;
+      height: 45px;
+      border-radius: 25px;
+      font-size: 15px;
+      border: none;
+      outline: none;
+      padding: 10px 0px 10px 45px;
+      color: rgb(102, 102, 102);
+    }
+
+    button{
+      border: 0;
+    }
+  }
+}
