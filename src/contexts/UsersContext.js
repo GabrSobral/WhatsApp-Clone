@@ -22,7 +22,7 @@ export function UsersProvider({ children }) {
 					if(item._id === messageData.assignedTo){
 						item.messages.push(messageData)
 						if( item.messages[item.messages.length -1] === 
-								item.messages[item.messages.length -2]){
+								item.messages[item.messages.length -2] ){
 									item.messages.pop()
 						}
 					}
@@ -31,11 +31,11 @@ export function UsersProvider({ children }) {
 				return newState
 			})
 		})
-
 		return () => socket.removeAllListeners()
 	},[])
 
-	// useEffect(() => { console.log(rooms) }, [ rooms ])
+	useEffect(() => { console.log("SelectedRoom", selectedRoom) }, [ selectedRoom ])
+	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
 	useEffect(() => {
 		(async () =>{
@@ -45,12 +45,10 @@ export function UsersProvider({ children }) {
 			setRooms(data)
 
 			const myRooms = data.map(item => item.user[0]._id)
-
 			socket.emit('joinroom', {rooms: [...myRooms, id]})
 		})()
 	},[])
 
-	function handleSelectRoom(room){ setSelectedRoom(room);}
 	function handleAddMessageToRoom(message){
 		// setRooms(prevState => {
 		// 	const a = prevState.map((item, index) => {
@@ -80,12 +78,13 @@ export function UsersProvider({ children }) {
 
 	return(
 		<UsersContext.Provider 
-		value={{
-			rooms,
-			handleSelectRoom,
-			selectedRoom,
-			handleAddMessageToRoom
-		}}>
+			value={{
+				rooms,
+				setSelectedRoom,
+				selectedRoom,
+				handleAddMessageToRoom
+			}}
+		>
 			{children} 
 		</UsersContext.Provider>
 	)
