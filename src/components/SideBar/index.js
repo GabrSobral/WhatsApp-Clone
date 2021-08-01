@@ -8,7 +8,7 @@ import styles from './styles.module.scss'
 import { useUsers } from '../../contexts/UsersContext'
 
 export function SideBar(){
-  const { rooms, handleSelectRoom } = useUsers()
+  const { rooms } = useUsers()
   const [ search, setSearch ] = useState('')
 
   function handleSetSearch(value){ setSearch(value) }
@@ -25,7 +25,7 @@ export function SideBar(){
           <UserItem
             key={room._id}
             room={room}
-            handleSelectRoom={handleSelectRoom}
+            // handleSelectRoom={handleSelectRoom}
           />
         ))}
 			</div>
