@@ -5,6 +5,7 @@ import { getToken } from '../utils/handleToken';
 
 import api from '../services/api.js'
 import { socket } from "../services/socket";
+import { useCallback } from 'react';
 
 const UsersContext = createContext('')
 
@@ -34,20 +35,19 @@ export function UsersProvider({ children }) {
 		return () => socket.removeAllListeners()
 	},[])
 
-	useEffect(() => { console.log("SelectedRoom", selectedRoom) }, [ selectedRoom ])
 	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
-	useEffect(() => {
-		(async () =>{
+	const handleFetchRooms = useCallback(() => {
+		(async function(){
 			const { data } = await api.get('room/list')
-
+	
 			const { id } = parseJwt(getToken())
 			setRooms(data)
-
+	
 			const myRooms = data.map(item => item.user[0]._id)
 			socket.emit('joinroom', {rooms: [...myRooms, id]})
 		})()
-	},[])
+	},[]) 
 
 	function handleAddMessageToRoom(message){
 		// setRooms(prevState => {
@@ -76,13 +76,30 @@ export function UsersProvider({ children }) {
 		// // }))
 	}
 
+	async function handleSelectRoom(room){ 
+		if(room._id === selectedRoom?._id){return}
+
+		if(room.hasMessages){ 
+			setSelectedRoom(room)
+			return 
+		} else {
+			const { data } = await api.get(`room/messages/list/${room._id}`)
+			data.pop()
+			room.messages = data.concat(room.messages)
+			room.hasMessages = true
+			setSelectedRoom(room)
+		}	
+  }
+
 	return(
 		<UsersContext.Provider 
 			value={{
 				rooms,
 				setSelectedRoom,
 				selectedRoom,
-				handleAddMessageToRoom
+				handleAddMessageToRoom,
+				handleSelectRoom,
+				handleFetchRooms
 			}}
 		>
 			{children} 

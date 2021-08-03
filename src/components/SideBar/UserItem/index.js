@@ -2,34 +2,19 @@ import { MdPerson } from 'react-icons/md'
 import { FaAngleDown } from 'react-icons/fa'
 import styles from './styles.module.scss'
 import { format } from 'date-fns'
-import { useUsers } from '../../../contexts/UsersContext'
-import api from '../../../services/api'
 
 export function UserItem({
   room,
-  // handleSelectRoom
+  handleSelectRoom
 }){
-  const { setSelectedRoom, selectedRoom } = useUsers()
   const lastMessage = room.messages[room.messages.length - 1]
   const formattedMessageDate = room.messages.length !== 0 && 
     format(new Date(lastMessage.timestamp), "HH:mm")
 
-  async function handleSelectRoomAA(room){ 
-    setSelectedRoom(room)
-    if(room._id === selectedRoom?._id){return}
-
-    const { data } = await api.get(`room/messages/list/${room._id}`)
-    data.pop()
-    setSelectedRoom(prevState => {
-      prevState.messages = data.concat(prevState.messages)
-      return prevState
-    })
-  }
-
   return(
     <div 
       className={styles.user_container} 
-      onClick={() => handleSelectRoomAA(room)}>
+      onClick={() => handleSelectRoom(room)}>
         
       <div className={styles.user_img}>  
         <MdPerson size={30} color="#919191"/> 
