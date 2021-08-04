@@ -32,7 +32,7 @@ export function UserItem({
           <span>
             {room.messages.length !== 0 && lastMessage.message}
           </span>
-          <div>3</div>
+          {room.unreadMessages !== 0 && <div>{room?.unreadMessages}</div>}
 
           <button type="button" className={styles.details}>
             <FaAngleDown size={20} color="#919191"/>
