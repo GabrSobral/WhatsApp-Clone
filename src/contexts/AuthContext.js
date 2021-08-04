@@ -16,8 +16,10 @@ export function AuthProvider({ children }){
   useEffect(() => {
     const myToken = getToken()
     if(myToken){
+      setIsAuthenticated(true)
       setTokenJWT(parseJwt(myToken))
     }
+
   },[])
 
   async function SignIn(email, password){

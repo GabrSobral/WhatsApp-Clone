@@ -48,7 +48,7 @@ export function UsersProvider({ children }) {
 	const handleFetchRooms = useCallback(() => {
 		(async function(){
 			const { data } = await api.get('room/list')
-	
+			console.log(data)
 			const { id } = parseJwt(getToken())
 			setRooms(data)
 	
