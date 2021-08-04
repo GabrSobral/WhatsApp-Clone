@@ -14,13 +14,20 @@ export function UsersProvider({ children }) {
 	const [ selectedRoom, setSelectedRoom ] = useState()
 
 	useEffect(() => {
-		socket.on('newMessage', ({ messageData }) => {
-			if(getToken() === messageData.user){
+		socket.on('newMessage', ({ messageData, unreadMessages }) => {
+			if(parseJwt(getToken()).id === messageData.user){
 				return
 			}
-			setRooms((prevState) => {
-				const newState =  prevState.map(item => {
+			setRooms((prevState) => (
+				prevState.map(item => {					
 					if(item._id === messageData.assignedTo){
+						console.log(selectedRoom, item)
+							if(unreadMessages.to === item._id){
+								if(unreadMessages.user !== parseJwt(getToken()).id){
+									item.unreadMessages += 1
+								}
+							}
+
 						item.messages.push(messageData)
 						if( item.messages[item.messages.length -1] === 
 								item.messages[item.messages.length -2] ){
@@ -29,10 +36,11 @@ export function UsersProvider({ children }) {
 					}
 					return item
 				})
-				return newState
-			})
+			))
 		})
+
 		return () => socket.removeAllListeners()
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[])
 
 	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
@@ -50,41 +58,34 @@ export function UsersProvider({ children }) {
 	},[]) 
 
 	function handleAddMessageToRoom(message){
-		// setRooms(prevState => {
-		// 	const a = prevState.map((item, index) => {
-		// 		if(item._id === message.assignedTo){
-		// 			const messages = item.messages
-		// 			messages.push(message)
-		// 			console.log("mensagesns: ", messages)
-		// 			item.messages = messages
-		// 			console.log('item:, ', item.messages)
-		// 		}
-		// 		return item
-		// 	})
-		// 	console.log(a)
-		// 	return a
-		// })
-		// // setRooms(prevState => prevState.map(item => {
-		// // 	if(item._id === message.assignedTo){
-		// // 		item.messages.push(message)
-		// // 		if(item.messages[item.messages.length -1] === 
-		// // 			 item.messages[item.messages.length -2]){
-		// // 				item.messages.pop()
-		// // 		}
-		// // 	}
-		// // 	return item
-		// // }))
+		setRooms(prevState => prevState.map(item => {
+			if(item._id === message.assignedTo){
+				item.messages.push(message)
+				if(item.messages[item.messages.length -1] === 
+					 item.messages[item.messages.length -2]){
+						item.messages.pop()
+				}
+			}
+			return item
+		}))
 	}
 
 	async function handleSelectRoom(room){ 
 		if(room._id === selectedRoom?._id){return}
 
+		if(room.unreadMessages !== 0){
+			socket.emit('viewUnreadMessages', 
+			{ user: parseJwt(getToken()).id, room: room._id })
+
+			room.unreadMessages = 0
+		}
+		
 		if(room.hasMessages){ 
 			setSelectedRoom(room)
 			return 
 		} else {
 			const { data } = await api.get(`room/messages/list/${room._id}`)
-			data.pop()
+			data.splice((data.length - room.messages.length - 1), data.length - 1)
 			room.messages = data.concat(room.messages)
 			room.hasMessages = true
 			setSelectedRoom(room)
