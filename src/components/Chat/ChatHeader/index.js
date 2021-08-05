@@ -19,7 +19,8 @@ export function ChatHeader(){
       <div className={styles.name_and_users}>
         <span className='chat-name'>{selectedRoom.user[0].name}</span>
         <span className='chat-last-online'>
-          {selectedRoom?.user[0].isOnline ? 'online' : formattedDate}
+          { selectedRoom.isWritting ? 'digitando...' : 
+            selectedRoom?.user[0].isOnline ? 'online' : formattedDate }
         </span>
       </div>
       <div className={styles.search_and_more}>

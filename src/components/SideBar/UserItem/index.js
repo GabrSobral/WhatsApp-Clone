@@ -29,9 +29,13 @@ export function UserItem({
         </div>
 
         <div className={styles.message_and_counter}>
-          <span>
-            {room.messages.length !== 0 && lastMessage.message}
-          </span>
+          { room.isWritting ? 
+            <span className={styles.writting}>digitando...</span> : 
+            <span className={styles.lastMessage}>
+              {room.messages.length !== 0 && lastMessage.message}
+            </span>
+          }
+
           {room.unreadMessages !== 0 && <div>{room?.unreadMessages}</div>}
 
           <button type="button" className={styles.details}>

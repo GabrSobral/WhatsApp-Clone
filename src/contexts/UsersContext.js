@@ -13,42 +13,62 @@ export function UsersProvider({ children }) {
 	const [ rooms, setRooms ] = useState([])
 	const [ selectedRoom, setSelectedRoom ] = useState()
 
-	useEffect(() => {
+	const handleReceiveMessage = useCallback(() => {
 		socket.on('newMessage', ({ messageData, unreadMessages }) => {
-			if(parseJwt(getToken()).id === messageData.user){
-				return
-			}
-			setRooms((prevState) => (
-				prevState.map(item => {					
-					if(item._id === messageData.assignedTo){
-						console.log(selectedRoom, item)
-							if(unreadMessages.to === item._id){
-								if(unreadMessages.user !== parseJwt(getToken()).id){
-									item.unreadMessages += 1
-								}
-							}
+			if(parseJwt(getToken()).id === messageData.user){ return }
 
+			setRooms((prevState) => (
+				prevState.map(item => {		
+					if(item._id === messageData.assignedTo){
+
+						if(unreadMessages.to === item._id){
+							if(!selectedRoom || selectedRoom._id !== messageData.assignedTo){
+								console.log(`passou ${selectedRoom?._id} e ${messageData.assignedTo}`)
+								if(unreadMessages.user !== parseJwt(getToken()).id){
+									item.unreadMessages++
+								}
+							} else {
+								socket.emit('viewUnreadMessages', 
+								{ user: parseJwt(getToken()).id, room: item._id })
+							}
+						}
 						item.messages.push(messageData)
 						if( item.messages[item.messages.length -1] === 
 								item.messages[item.messages.length -2] ){
-									item.messages.pop()
+								item.messages.pop()
 						}
 					}
 					return item
 				})
 			))
 		})
-
 		return () => socket.removeAllListeners()
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[selectedRoom])
+
+	useEffect(() => {
+		handleReceiveMessage()
+	},[handleReceiveMessage])
+
+	useEffect(() => {
+		socket.on('receiveWritting', ({ writting, room, to }) => {
+			if(to !== parseJwt(getToken()).id){ return }
+			setRooms((prevState) => (
+				prevState.map(item => {		
+					if(item._id === room){
+						item.isWritting = writting
+					}
+					return item
+				})
+			))
+		})
 	},[])
 
 	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
+	useEffect(() => { console.log("SelectedRoom", selectedRoom) }, [ selectedRoom ])
 
 	const handleFetchRooms = useCallback(() => {
 		(async function(){
 			const { data } = await api.get('room/list')
-			console.log(data)
 			const { id } = parseJwt(getToken())
 			setRooms(data)
 	
@@ -71,7 +91,7 @@ export function UsersProvider({ children }) {
 	}
 
 	async function handleSelectRoom(room){ 
-		if(room._id === selectedRoom?._id){return}
+		if(room._id === selectedRoom?._id){ return }
 
 		if(room.unreadMessages !== 0){
 			socket.emit('viewUnreadMessages', 

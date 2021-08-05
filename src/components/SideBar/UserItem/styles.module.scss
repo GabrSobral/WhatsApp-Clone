@@ -14,6 +14,7 @@
   cursor: pointer;
 
   transition: 0.3s ease;
+  z-index: 5;
 
   .user_img{
     min-height: 3.4rem;
@@ -51,12 +52,17 @@
       position: relative;
       display: flex;
       width: 100%;
-      overflow-x: hidden;
+      overflow: hidden;
       align-items: center;
       justify-content: space-between;
       margin-top: 5px;
 
-      > span{
+      .writting{
+        color: var(--green-800);
+        font-size: 0.8rem;
+      }
+
+      .lastMessage{
         font-size: 13px;
         white-space: nowrap;
         overflow: hidden;
@@ -77,14 +83,14 @@
       }
 
       .details{
-        transform: translate(100%, -50%);
+        transform: translate(100%, 0% );
         right: 0;
         position: absolute;
         transition: 0.2s ease;
         border: 0;
         opacity: 0;
         background-color: transparent;
-        display: hidden;
+        z-index: 7;
       }
     }
   }
