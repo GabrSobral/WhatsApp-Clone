@@ -30,7 +30,9 @@ export function AuthProvider({ children }){
     setIsAuthenticated(true)
 
     api.interceptors.request.use(config => {
-      config.headers.authorization = `Bearer ${data.token}`
+      if(!config.headers.Authorization){
+        config.headers.Authorization = `Bearer ${data.token}`
+      }
       return config
     })
 

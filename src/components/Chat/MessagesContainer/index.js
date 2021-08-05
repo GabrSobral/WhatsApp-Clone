@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 
 import { useUsers } from '../../../contexts/UsersContext'
-import { useAuth } from '../../../contexts/AuthContext'
 
 import { UserOne } from './UserOne'
+import { UserTwo } from './UserTwo'
 
 import styles from './styles.module.scss'
-import { UserTwo } from './UserTwo'
 import { parseJwt } from '../../../utils/parseJWT'
 import { getToken } from '../../../utils/handleToken'
 

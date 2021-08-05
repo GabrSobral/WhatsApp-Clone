@@ -16,3 +16,16 @@
     background-color: transparent;
   }
 }
+
+@media only screen and (max-width: 800px) {
+  .main{
+    aside{
+      max-width: 45%;
+      min-width: 45%;
+    }
+    main{
+      max-width: 55%;
+      min-width: 55%;
+    }
+  }
+}
