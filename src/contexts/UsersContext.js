@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React, { useState, useContext, createContext, useEffect } from 'react'
 
 import { parseJwt } from '../utils/parseJWT';
@@ -13,17 +14,15 @@ export function UsersProvider({ children }) {
 	const [ rooms, setRooms ] = useState([])
 	const [ selectedRoom, setSelectedRoom ] = useState()
 
-	const handleReceiveMessage = useCallback(() => {
+	useEffect(() => {
 		socket.on('newMessage', ({ messageData, unreadMessages }) => {
 			if(parseJwt(getToken()).id === messageData.user){ return }
-
-			setRooms((prevState) => (
+			setRooms(prevState => 
 				prevState.map(item => {		
 					if(item._id === messageData.assignedTo){
-
+	
 						if(unreadMessages.to === item._id){
-							if(!selectedRoom || selectedRoom._id !== messageData.assignedTo){
-								console.log(`passou ${selectedRoom?._id} e ${messageData.assignedTo}`)
+							if(selectedRoom?._id !== messageData.assignedTo){
 								if(unreadMessages.user !== parseJwt(getToken()).id){
 									item.unreadMessages++
 								}
@@ -40,18 +39,16 @@ export function UsersProvider({ children }) {
 					}
 					return item
 				})
-			))
+			)
+			
 		})
 		return () => socket.removeAllListeners()
-	},[selectedRoom])
-
-	useEffect(() => {
-		handleReceiveMessage()
-	},[handleReceiveMessage])
+	},[selectedRoom?._id])
 
 	useEffect(() => {
 		socket.on('receiveWritting', ({ writting, room, to }) => {
 			if(to !== parseJwt(getToken()).id){ return }
+			console.log('digitando...', writting)
 			setRooms((prevState) => (
 				prevState.map(item => {		
 					if(item._id === room){
@@ -61,12 +58,25 @@ export function UsersProvider({ children }) {
 				})
 			))
 		})
-	},[])
+		return () => socket.removeAllListeners()
+	},[selectedRoom])
+
+	useEffect(() => {
+		socket.on('receiveReadMessages', ({ room }) => {
+			setRooms(prevState => prevState.map(item => {
+				if(item._id !== room){ return item }
+				item.messages.forEach(message => message.viewed = true)
+				console.log(item.messages)
+				return item
+			}))
+		})
+		return () => socket.removeAllListeners()
+	},[selectedRoom])
 
 	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 	useEffect(() => { console.log("SelectedRoom", selectedRoom) }, [ selectedRoom ])
 
-	const handleFetchRooms = useCallback(() => {
+	const handleFetchRooms = useCallback(async () => {
 		(async function(){
 			const { data } = await api.get('room/list')
 			const { id } = parseJwt(getToken())
@@ -75,7 +85,7 @@ export function UsersProvider({ children }) {
 			const myRooms = data.map(item => item.user[0]._id)
 			socket.emit('joinroom', {rooms: [...myRooms, id]})
 		})()
-	},[]) 
+	},[])
 
 	function handleAddMessageToRoom(message){
 		setRooms(prevState => prevState.map(item => {
@@ -96,7 +106,6 @@ export function UsersProvider({ children }) {
 		if(room.unreadMessages !== 0){
 			socket.emit('viewUnreadMessages', 
 			{ user: parseJwt(getToken()).id, room: room._id })
-
 			room.unreadMessages = 0
 		}
 		

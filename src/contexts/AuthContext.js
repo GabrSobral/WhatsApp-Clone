@@ -19,7 +19,6 @@ export function AuthProvider({ children }){
       setIsAuthenticated(true)
       setTokenJWT(parseJwt(myToken))
     }
-
   },[])
 
   async function SignIn(email, password){
