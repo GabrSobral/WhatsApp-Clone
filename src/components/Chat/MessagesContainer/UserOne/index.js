@@ -18,7 +18,7 @@ export function UserOne({ message }){
 
       <div className={styles.time_and_receiver}>
         <span className={styles.time}>{formattedMessageDate}</span>
-        <MdDoneAll size={23} color='#000'/>
+        <MdDoneAll size={16} fill={message.viewed ? "#0f0" : "#f00"}/>
       </div>
     </div>
   )
