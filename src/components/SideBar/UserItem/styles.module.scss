@@ -25,6 +25,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &.online{
+      border: 2px solid var(--green-800);
+    }
   }
 
   .container_char{

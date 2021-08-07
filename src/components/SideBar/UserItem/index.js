@@ -16,8 +16,8 @@ export function UserItem({
       className={styles.user_container} 
       onClick={() => handleSelectRoom(room)}>
         
-      <div className={styles.user_img}>  
-        <MdPerson size={30} color="#919191"/> 
+      <div className={`${styles.user_img} ${room.user[0].isOnline && styles.online}`}>  
+        <MdPerson size={30} fill={room.user[0].isOnline ? '#51b786' : '#919191'}/> 
       </div>
 
       <div className={styles.container_char}>
@@ -39,7 +39,7 @@ export function UserItem({
           {room.unreadMessages !== 0 && <div>{room?.unreadMessages}</div>}
 
           <button type="button" className={styles.details}>
-            <FaAngleDown size={20} color="#919191"/>
+            <FaAngleDown size={20} fill="#919191"/>
           </button>
         </div>
       </div>
