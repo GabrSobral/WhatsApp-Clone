@@ -13,6 +13,7 @@ const UsersContext = createContext('')
 export function UsersProvider({ children }) { 
 	const [ rooms, setRooms ] = useState([])
 	const [ selectedRoom, setSelectedRoom ] = useState()
+	const [ isFocused, setIsFocused ] = useState(false)
 
 	useEffect(() => {
 		socket.on('newMessage', ({ messageData, unreadMessages }) => {
@@ -31,11 +32,7 @@ export function UsersProvider({ children }) {
 								{ user: parseJwt(getToken()).id, room: item._id })
 							}
 						}
-						item.messages.push(messageData)
-						if( item.messages[item.messages.length -1] === 
-								item.messages[item.messages.length -2] ){
-								item.messages.pop()
-						}
+						item.messages = [...item.messages, messageData]
 					}
 					return item
 				})
@@ -48,7 +45,6 @@ export function UsersProvider({ children }) {
 	useEffect(() => {
 		socket.on('receiveWritting', ({ writting, room, to }) => {
 			if(to !== parseJwt(getToken()).id){ return }
-			console.log('digitando...', writting)
 			setRooms((prevState) => (
 				prevState.map(item => {		
 					if(item._id === room){
@@ -62,19 +58,53 @@ export function UsersProvider({ children }) {
 	},[selectedRoom])
 
 	useEffect(() => {
-		socket.on('receiveReadMessages', ({ room }) => {
+		socket.on('receiveReadMessages', ({ room, user }) => {
+			if(user === parseJwt(getToken()).id){ return }
 			setRooms(prevState => prevState.map(item => {
 				if(item._id !== room){ return item }
 				item.messages.forEach(message => message.viewed = true)
-				console.log(item.messages)
 				return item
 			}))
 		})
 		return () => socket.removeAllListeners()
 	},[selectedRoom])
 
-	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
-	useEffect(() => { console.log("SelectedRoom", selectedRoom) }, [ selectedRoom ])
+	useEffect(() => { 
+		if(!getToken()){ return }
+		
+		window.onblur = () => {
+			socket.emit('imOnline', { 
+				user: parseJwt(getToken()).id, 
+				status: false, 
+				room: selectedRoom?._id
+			})
+			setIsFocused(false)
+		}
+		window.onfocus = () => {
+			socket.emit('imOnline', { 
+				user: parseJwt(getToken()).id, 
+				status: true, 
+				room: selectedRoom?._id 
+			})
+			setIsFocused(true)
+		}
+	},[selectedRoom])
+
+	useEffect(() => {
+		socket.on('receiveImOnline', ({ user, status, room }) => {
+			if(parseJwt(getToken()).id === user){ return }
+			setRooms(prevState => prevState.map(item => {
+				if(item._id === room){
+					item.user[0].isOnline = status
+					item.user[0].lastOnline = new Date()
+				} 
+				return item
+			}))
+		})
+		return () => socket.removeAllListeners()
+	},[selectedRoom])
+
+	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
 	const handleFetchRooms = useCallback(async () => {
 		(async function(){
@@ -90,11 +120,20 @@ export function UsersProvider({ children }) {
 	function handleAddMessageToRoom(message){
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
-				item.messages.push(message)
-				if(item.messages[item.messages.length -1] === 
-					 item.messages[item.messages.length -2]){
-						item.messages.pop()
-				}
+				item.messages = [...item.messages, message]
+			}
+			return item
+		}))
+	}
+	function handleUpdateMessagesSent(message){
+		setRooms(prevState => prevState.map(item => {
+			if(item._id === message.assignedTo){
+				item.messages.map(messageItem => {
+					if(messageItem._id === message._id){
+						return message
+					}
+					return messageItem
+				})
 			}
 			return item
 		}))
@@ -114,8 +153,10 @@ export function UsersProvider({ children }) {
 			return 
 		} else {
 			const { data } = await api.get(`room/messages/list/${room._id}`)
-			data.splice((data.length - room.messages.length - 1), data.length - 1)
-			room.messages = data.concat(room.messages)
+			if(data.length > 1) { 
+				data.splice((data.length - room.messages.length), room.messages.length)
+				room.messages = data.concat(room.messages)
+			}
 			room.hasMessages = true
 			setSelectedRoom(room)
 		}	
@@ -129,7 +170,8 @@ export function UsersProvider({ children }) {
 				selectedRoom,
 				handleAddMessageToRoom,
 				handleSelectRoom,
-				handleFetchRooms
+				handleFetchRooms,
+				handleUpdateMessagesSent
 			}}
 		>
 			{children} 
