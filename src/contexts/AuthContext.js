@@ -1,17 +1,19 @@
-import { useState, useContext } from "react";
-import { createContext } from "react";
+import { useState, useContext, createContext } from "react";
+import { useHistory } from "react-router-dom";
 
-import { getToken, login } from "../utils/handleToken";
+import { getToken, login, logout } from "../utils/handleToken";
 import { parseJwt } from "../utils/parseJWT.js";
 
 import api from "../services/api";
 import { useEffect } from "react";
+import { socket } from "../services/socket";
 
 const AuthContext = createContext({})
 
 export function AuthProvider({ children }){
   const [ isAuthenticated, setIsAuthenticated ] = useState({})
   const [ tokenJWT, setTokenJWT ] = useState({})
+  const { push } = useHistory()
 
   useEffect(() => {
     const myToken = getToken()
@@ -51,6 +53,15 @@ export function AuthProvider({ children }){
 
     return data
   }
+  async function Logout(){
+		await api.patch('/users/logout')
+    socket.emit('imOnline', { 
+      user: parseJwt(getToken()).id, 
+      status: false, 
+    })
+    logout()
+    push('/SignIn')
+	}
 
   return(
     <AuthContext.Provider
@@ -58,7 +69,8 @@ export function AuthProvider({ children }){
         SignIn,
         SignUp,
         isAuthenticated,
-        tokenJWT
+        tokenJWT,
+        Logout
       }}
     >
       {children}
