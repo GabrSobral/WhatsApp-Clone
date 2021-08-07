@@ -3,7 +3,7 @@
 This is a WhatsApp clone, and was built as a study of socket.io and its integration with ReactJS.
 The `backend` can be find <a href="https://github.com/GabrSobral/Real-time-chat-application">here<a>
   
-  ![ProjectImage](https://github.com/GabrSobral/React-time-chat-application-FRONTEND/blob/master/Landing.png?raw=true)
+  ![ProjectImage](https://github.com/GabrSobral/React-time-chat-application-FRONTEND/blob/master/.github/Landing.png?raw=true)
 
 ## Technologies
   - ReactJS <img alt="React" src="https://img.shields.io/badge/react-%2320232a.svg?style=flat-square&logo=react&logoColor=%2361DAFB"/>

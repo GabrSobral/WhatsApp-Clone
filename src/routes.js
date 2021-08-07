@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import { isAuthenticated } from './utils/handleToken.js';
 import { Main } from './pages/Main/index.js';
+import { UsersProvider } from './contexts/UsersContext';
 
 export default function Routes(){
 
@@ -24,7 +25,11 @@ export default function Routes(){
 	return(
 		<BrowserRouter>
 			<Switch>
-				<PrivateRoute exact path='/' render={Main}/>
+				<PrivateRoute exact path='/' render={() => (
+					<UsersProvider>
+						<Main/>
+					</UsersProvider>
+				)}/>
 
 				<Route path='/signUp' component={SignUp}/>
 				<Route path='/signIn' component={SignIn}/>

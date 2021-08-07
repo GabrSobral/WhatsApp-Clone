@@ -34,7 +34,7 @@
   }
 
   .container_char{
-    width: 85%;
+    width: calc(100% - 3.5rem);
 
     .name_and_time{
       display: flex;
