@@ -25,7 +25,7 @@ export function UsersProvider({ children }) {
 					if(item._id === messageData.assignedTo){
 	
 						if(unreadMessages.to === item._id){
-							if(selectedRoom?._id !== messageData.assignedTo){
+							if(!isFocused || selectedRoom?._id !== messageData.assignedTo){
 								if(unreadMessages.user !== parseJwt(getToken()).id){
 									item.unreadMessages++
 								}
@@ -39,7 +39,6 @@ export function UsersProvider({ children }) {
 					return item
 				})
 			)
-			
 		})
 
 		socket.on('receiveWritting', ({ writting, room, to }) => {
@@ -77,6 +76,15 @@ export function UsersProvider({ children }) {
 				status: true, 
 				room: selectedRoom?._id 
 			})
+			if(selectedRoom){
+				socket.emit('viewUnreadMessages', 
+					{ user: parseJwt(getToken()).id, room: selectedRoom?._id })
+				setSelectedRoom(prevState => {
+					prevState.unreadMessages = 0
+					return prevState	
+				})
+			}
+			
 			setIsFocused(true)
 		}
 
@@ -91,8 +99,7 @@ export function UsersProvider({ children }) {
 			}))
 		})
 		return () => socket.removeAllListeners()
-	},[selectedRoom?._id])
-
+	},[selectedRoom, isFocused])
 
 	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 

@@ -17,6 +17,7 @@
   z-index: 5;
 
   .user_img{
+    transition: 0.2s ease;
     min-height: 3.4rem;
     min-width: 3.4rem;
     background-color: rgb(225, 225, 225);
@@ -28,6 +29,7 @@
 
     &.online{
       border: 2px solid var(--green-800);
+      background-color: transparent;
     }
   }
 
