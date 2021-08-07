@@ -1,0 +1,39 @@
+.user_two{
+  z-index: 99;
+  position: relative;
+  width: fit-content;
+  min-width: 180px;
+  max-width: 70%;
+  background-color: #fff;
+  border-radius: 0px 7px 7px 7px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.083);
+  margin: 2px 0px;
+  padding: 5px 10px;
+  
+  .arrow_left{
+    position: absolute;
+    left: -8px;
+    top: -2px;
+    height: 15px;
+    width: 15px;
+
+    svg{
+      width: 8px;
+      height: 13px;
+    }
+  }
+}
+
+.message{
+  word-wrap: normal;
+  margin-top: 3px;
+  padding: 0;
+  color: rgb(73, 73, 73);
+  word-break: break-word;
+}
+.time{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 12px;
+}

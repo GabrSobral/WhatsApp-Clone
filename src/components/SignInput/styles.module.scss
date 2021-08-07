@@ -1,0 +1,45 @@
+.container{
+  margin: 1rem 0;
+  position: relative;
+  width: 100%;
+
+  span{
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    left: 7%;
+    background-color: var(--white);
+    padding: 0 0.3rem;
+    transition: 0.2s ease;
+    pointer-events: none;
+    color: var(--gray-700);
+  }
+  &:focus-within{
+    span{
+      top: 0;
+      left: 3%;
+    }
+    input{
+      border: 2px solid var(--gray-700);
+    }
+  }
+
+  input{
+    transition: 0.2s ease;
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--gray-400);
+    border-radius: 7px;
+    outline: 0;
+  }
+  &.is_filled{
+    input{
+      border: 2px solid var(--green-500);
+    }
+    span{
+      color: var(--green-500);
+      top: 0;
+      left: -5%;
+    }
+  }
+}

@@ -1,0 +1,62 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Roboto',sans-serif;
+	color: rgb(148, 148, 148);
+	text-decoration: none;
+}
+
+:root{
+	--white: #ffffff;
+	
+	--gray-50: #f8f8f8;
+	--gray-100: #EDEDED;
+	--gray-400: #d5d5d5;
+	--gray-600: #A6ADA0;
+	--gray-700: #a9a9a9;
+	
+	--green-500: #51b786;
+	--green-550: #42996f;
+	--green-800: #06d755;
+
+	--black: #000000
+}
+
+.App {
+	display: flex;
+	background-color: #dadbd3;
+	height: 100vh;
+	width: 100%;
+}
+
+
+button{
+	border-radius: 7px;
+	outline: 0;
+	transition: 0.2s ease;
+	cursor: pointer;
+
+	&:hover{
+		opacity: 0.8;
+	}
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(211, 211, 211); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(184, 184, 184); 
+}

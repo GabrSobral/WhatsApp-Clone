@@ -1,0 +1,119 @@
+.user_container{
+  width: 100%;
+  min-height: 5rem;
+  border: 0;
+  border-radius: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--white);
+
+  border-bottom: 1px solid var(--gray-100);
+  padding: 0px 1rem;
+  cursor: pointer;
+
+  transition: 0.3s ease;
+  z-index: 5;
+
+  .user_img{
+    transition: 0.2s ease;
+    min-height: 3.4rem;
+    min-width: 3.4rem;
+    background-color: rgb(225, 225, 225);
+    border-radius: 1.7rem;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.online{
+      border: 2px solid var(--green-800);
+      background-color: transparent;
+    }
+  }
+
+  .container_char{
+    width: 85%;
+
+    .name_and_time{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      span{
+        font-size: 1rem;
+        white-space: nowrap;
+
+        &:first-child{
+          color: var(--black);
+        }
+        &:last-child{
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .message_and_counter{
+      position: relative;
+      display: flex;
+      width: 100%;
+      overflow: hidden;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+
+      .writting{
+        color: var(--green-800);
+        font-size: 0.8rem;
+      }
+
+      .lastMessage{
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      > div{
+        transition: 0.2s ease;
+        min-width: 1.25rem;
+        min-height: 1.25rem;
+        border-radius: 0.625rem;
+        background-color: var(--green-800);
+        color: var(--white);
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .details{
+        transform: translate(100%, 0% );
+        right: 0;
+        position: absolute;
+        transition: 0.2s ease;
+        border: 0;
+        opacity: 0;
+        background-color: transparent;
+        z-index: 7;
+      }
+    }
+  }
+  &:hover{
+    filter: brightness(0.9);
+
+    .container_char{
+      .message_and_counter{
+        div{
+          margin-right: 1.5rem;
+        }
+        .details{
+          transform: translateX(0%);
+          display: flex;
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

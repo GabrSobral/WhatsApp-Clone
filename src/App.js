@@ -1,20 +1,14 @@
 import React from 'react';
-import './styles/global.css'
+import { UsersProvider } from './contexts/UsersContext.js';
 import Routes from './routes.js'
-import { RoomProvider } from './context/roomContext.js'
+import './styles/global.scss'
 
 export default function App() {
-
-
   return (
     <div className="App">
-      <div className='app-body'>
-        <RoomProvider>
-
-          <Routes />
-
-        </RoomProvider>   
-      </div>
+      <UsersProvider>
+        <Routes />
+      </UsersProvider>
     </div>
   );
 }

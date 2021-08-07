@@ -1,0 +1,61 @@
+.container{
+  width: 100%;
+  padding: 0.3rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+  background-color: #ededed;
+
+  .img_container{
+    min-height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    margin-right: 15px;
+    background-color: var(--gray-400);
+  }
+
+  .name_and_users{
+    width: 100%;
+
+    span:first-child{
+      display: flex;
+      align-items: center;
+      color: rgb(49, 49, 49);
+    }
+    span:last-child{
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      color: rgb(148, 148, 148);
+      font-size: 13px;
+    }
+  }
+
+  .search_and_more{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 90px;
+
+    button{
+      border-radius: 100%;
+      outline: none;
+      height: 43px;
+      width: 43px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s ease;
+
+      &:hover{
+        background-color: var(--gray-400);
+      }
+    }
+  }
+}
