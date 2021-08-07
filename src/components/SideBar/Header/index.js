@@ -4,22 +4,13 @@ import {
   MdPerson, 
   MdSpeakerNotes 
 } from "react-icons/md";
-import { useHistory } from "react-router-dom";
-import api from "../../../services/api";
+import { useAuth } from "../../../contexts/AuthContext";
 
-import { logout } from "../../../utils/handleToken";
 
 import styles from './styles.module.scss'
 
 export function Header(){
-  const { push } = useHistory()
-
-  async function Logout(){
-		await api.patch('/users/logout')
-    logout()
-    push('/SignIn')
-	}
-
+  const { Logout } = useAuth()
   return(
     <header className={styles.container}>
       <div className={styles.user_img}>
