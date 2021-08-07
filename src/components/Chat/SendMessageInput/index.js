@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { uniqueId } from 'lodash'
 
 import EmojiSVG from '../../../images/emoji.svg'
 import FileSVG from '../../../images/file.svg'
@@ -9,9 +10,15 @@ import api from "../../../services/api"
 import { socket } from "../../../services/socket"
 import styles from './styles.module.scss'
 import { useEffect } from 'react'
+import { parseJwt } from '../../../utils/parseJWT'
+import { getToken } from '../../../utils/handleToken'
 
 export function SendMessageInput(){
-  const { selectedRoom, handleAddMessageToRoom } = useUsers()
+  const { 
+    selectedRoom, 
+    handleAddMessageToRoom, 
+    handleUpdateMessagesSent 
+  } = useUsers()
   const [ newMessage, setNewMessage] = useState('')
   const [ verify, setVerify ] = useState(false)
 
@@ -25,13 +32,26 @@ export function SendMessageInput(){
       message: newMessage,
       assignedTo: selectedRoom._id,
     }
+    const messageWithAllData = {
+      _id: uniqueId(),
+      message: newMessage,
+      assignedTo: selectedRoom._id,
+      received: false,
+      timestamp: new Date(),
+      user: parseJwt(getToken()).id,
+      viewed: false
+    }
 
-    const { data } = await api.post('messages/new', message)
-    socket.emit('sendMessage', 
-      { messageData: data, room: selectedRoom.user[0]._id}
-    )
-    handleAddMessageToRoom(data)
+    handleAddMessageToRoom(messageWithAllData)
     setNewMessage('')
+    api.post('messages/new', message).then(({ data }) => {
+      socket.emit('sendMessage', 
+        { messageData: data, room: selectedRoom.user[0]._id}
+      )
+      messageWithAllData._id = data._id
+      messageWithAllData.received = true
+      handleUpdateMessagesSent(messageWithAllData)
+    })
   }
   
   useEffect(() => {
