@@ -16,6 +16,8 @@ export function UsersProvider({ children }) {
 	const [ isFocused, setIsFocused ] = useState(false)
 
 	useEffect(() => {
+		if(!getToken()){ return }
+
 		socket.on('newMessage', ({ messageData, unreadMessages }) => {
 			if(parseJwt(getToken()).id === messageData.user){ return }
 			setRooms(prevState => 
@@ -39,10 +41,7 @@ export function UsersProvider({ children }) {
 			)
 			
 		})
-		return () => socket.removeAllListeners()
-	},[selectedRoom?._id])
 
-	useEffect(() => {
 		socket.on('receiveWritting', ({ writting, room, to }) => {
 			if(to !== parseJwt(getToken()).id){ return }
 			setRooms((prevState) => (
@@ -54,10 +53,7 @@ export function UsersProvider({ children }) {
 				})
 			))
 		})
-		return () => socket.removeAllListeners()
-	},[selectedRoom])
 
-	useEffect(() => {
 		socket.on('receiveReadMessages', ({ room, user }) => {
 			if(user === parseJwt(getToken()).id){ return }
 			setRooms(prevState => prevState.map(item => {
@@ -66,12 +62,7 @@ export function UsersProvider({ children }) {
 				return item
 			}))
 		})
-		return () => socket.removeAllListeners()
-	},[selectedRoom])
 
-	useEffect(() => { 
-		if(!getToken()){ return }
-		
 		window.onblur = () => {
 			socket.emit('imOnline', { 
 				user: parseJwt(getToken()).id, 
@@ -88,9 +79,7 @@ export function UsersProvider({ children }) {
 			})
 			setIsFocused(true)
 		}
-	},[selectedRoom])
 
-	useEffect(() => {
 		socket.on('receiveImOnline', ({ user, status, room }) => {
 			if(parseJwt(getToken()).id === user){ return }
 			setRooms(prevState => prevState.map(item => {
@@ -102,7 +91,8 @@ export function UsersProvider({ children }) {
 			}))
 		})
 		return () => socket.removeAllListeners()
-	},[selectedRoom])
+	},[selectedRoom?._id])
+
 
 	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
