@@ -14,6 +14,7 @@ import styles from './styles.module.scss'
 
 export function Header(){
   const { push } = useHistory()
+
   async function Logout(){
 		await api.patch('/users/logout')
     socket.emit('imOnline', { 
@@ -23,6 +24,7 @@ export function Header(){
     logout()
     push('/SignIn')
 	}
+
   return(
     <header className={styles.container}>
       <div className={styles.user_img}>

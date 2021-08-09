@@ -14,7 +14,8 @@ export function UserItem({
   return(
     <div 
       className={styles.user_container} 
-      onClick={() => handleSelectRoom(room)}>
+      onClick={() => handleSelectRoom(room)}
+    >
         
       <div className={`${styles.user_img} ${room.user[0].isOnline && styles.online}`}>  
         <MdPerson size={30} fill={room.user[0].isOnline ? '#51b786' : '#919191'}/> 
