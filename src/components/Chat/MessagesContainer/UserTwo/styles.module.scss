@@ -10,6 +10,11 @@
   margin: 2px 0px;
   padding: 5px 10px;
 
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
   .arrow_left{
     position: absolute;
     left: -8px;

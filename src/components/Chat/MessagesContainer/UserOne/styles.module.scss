@@ -10,6 +10,11 @@
   margin: 2px 0px 2px auto;
   padding: 5px 10px;
 
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
   .arrow_right{
     position: absolute;
     right: -15px;
