@@ -23,6 +23,10 @@
 	--black: #000000
 }
 
+html{
+	scroll-behavior: smooth;
+}
+
 .App {
 	display: flex;
 	background-color: #dadbd3;

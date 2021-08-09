@@ -114,6 +114,16 @@ export function UsersProvider({ children }) {
 		})()
 	},[])
 
+	const handleAddPreviousMessages = useCallback((prevMessages) => {
+		setSelectedRoom(prevState => {
+			if(prevMessages.length < 10){
+				prevState.hasAllMessages = true
+			}
+			prevState.messages = prevMessages.concat(prevState.messages)
+			return prevState
+		})
+	},[])
+
 	function handleAddMessageToRoom(message){
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
@@ -168,7 +178,8 @@ export function UsersProvider({ children }) {
 				handleAddMessageToRoom,
 				handleSelectRoom,
 				handleFetchRooms,
-				handleUpdateMessagesSent
+				handleUpdateMessagesSent,
+				handleAddPreviousMessages
 			}}
 		>
 			{children} 
