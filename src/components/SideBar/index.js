@@ -1,34 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { FiPlus } from 'react-icons/fi'
+import { Slide } from '../Slide'
 
 import { Header } from './Header'
-import { SearchBar } from './SearchBar'
-import { UserItem } from './UserItem'
+import { NewContact } from './NewContact'
+import { RoomsList } from './RoomsList'
 
 import styles from './styles.module.scss'
-import { useUsers } from '../../contexts/UsersContext'
 
 export function SideBar(){
-  const { rooms, handleSelectRoom } = useUsers()
-  const [ search, setSearch ] = useState('')
+  const [ showNewContact, setShowNewContact ] = useState(false)
+  const sideBarRef = useRef(null)
 
-  function handleSetSearch(value){ setSearch(value) }
+
+  useEffect(() => {
+    document.addEventListener('click', (event) => {
+      const isClickInside = sideBarRef.current.contains(event.target)
+      console.log(isClickInside)
+      if(!isClickInside) {
+        setShowNewContact(false)
+      }
+    });
+  },[])
 
   return(
-    <div className={styles.container}>
+    <div className={styles.container} ref={sideBarRef}>
 			<Header/>
-		  <SearchBar
-        value={search}
-        setSearch={handleSetSearch}
-      />
-			<div className={styles.chats}>
-        { rooms.map((room) => (
-          <UserItem
-            key={room._id}
-            room={room}
-            handleSelectRoom={handleSelectRoom}
-          />
-        ))}
-			</div>
+      <RoomsList/>
+
+      <Slide show={showNewContact}>
+        <NewContact/> 
+      </Slide>
+
+      <button 
+        onClick={() => setShowNewContact(prevState => !prevState)} 
+        className={styles.add_contact}
+        title="Add new contact"
+      >
+        <FiPlus size={32} stroke="#ffffff" />
+      </button>
 		</div>
   )
 }
