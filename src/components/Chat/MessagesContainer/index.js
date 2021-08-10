@@ -21,11 +21,10 @@ export function MessagesContainer(){
     scrollMessage.current.scrollIntoView({ behavior: 'smooth'}) }
 
   useEffect(() => { setMyId(parseJwt(getToken()).id) },[])
-  useEffect(() => { scrollToDown() },[ ])
+  useEffect(() => { scrollToDown() },[])
 
   useEffect(() => {
     const controller = new AbortController();
-
     container.current.onscroll = async () => {
       if(selectedRoom.hasAllMessages){ 
         controller.abort()
