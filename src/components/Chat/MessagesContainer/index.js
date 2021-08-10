@@ -21,7 +21,7 @@ export function MessagesContainer(){
     scrollMessage.current.scrollIntoView({ behavior: 'smooth'}) }
 
   useEffect(() => { setMyId(parseJwt(getToken()).id) },[])
-  useEffect(() => { scrollToDown() },[])
+  useEffect(() => { scrollToDown() },[ selectedRoom.messages ])
 
   useEffect(() => {
     const controller = new AbortController();
