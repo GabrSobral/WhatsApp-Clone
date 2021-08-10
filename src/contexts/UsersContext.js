@@ -13,7 +13,7 @@ const UsersContext = createContext('')
 export function UsersProvider({ children }) { 
 	const [ rooms, setRooms ] = useState([])
 	const [ selectedRoom, setSelectedRoom ] = useState()
-	const [ isFocused, setIsFocused ] = useState(false)
+	const [ isFocused, setIsFocused ] = useState(true)
 
 	useEffect(() => {
 		if(!getToken()){ return }
@@ -185,7 +185,8 @@ export function UsersProvider({ children }) {
 				handleSelectRoom,
 				handleFetchRooms,
 				handleUpdateMessagesSent,
-				handleAddPreviousMessages
+				handleAddPreviousMessages,
+				isFocused
 			}}
 		>
 			{children} 
