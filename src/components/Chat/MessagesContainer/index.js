@@ -9,19 +9,38 @@ import { UserTwo } from './UserTwo'
 import styles from './styles.module.scss'
 import { parseJwt } from '../../../utils/parseJWT'
 import { getToken } from '../../../utils/handleToken'
+import api from '../../../services/api'
 
 export function MessagesContainer(){
   const container = useRef()
-  const { selectedRoom, rooms } = useUsers()
+  const scrollMessage = useRef()
+  const { selectedRoom, handleAddPreviousMessages } = useUsers()
   const [ myId, setMyId ] = useState('')
 
+  function scrollToDown(){ 
+    scrollMessage.current.scrollIntoView({ behavior: 'smooth'}) }
+
+  useEffect(() => { setMyId(parseJwt(getToken()).id) },[])
+  useEffect(() => { scrollToDown() },[ selectedRoom.messages ])
+
   useEffect(() => {
-    setMyId(parseJwt(getToken()).id)
-  },[])
-
-  function scrollToDown(){ container.current.scrollTo(0, 99999) }
-
-  useEffect(() => { scrollToDown() },[ selectedRoom, rooms ])
+    const controller = new AbortController();
+    container.current.onscroll = async () => {
+      if(selectedRoom.hasAllMessages){ 
+        controller.abort()
+        return 
+      }
+      if(container.current.scrollTop === 0){
+        if(selectedRoom.messages.length > 9){
+          const last_message = selectedRoom?.messages[0]._id 
+          const { data } = await api.get(
+            `/room/messages/list/${selectedRoom._id}?last_message=${last_message}`
+          )
+          handleAddPreviousMessages(data)
+        }
+      }
+    }
+  },[handleAddPreviousMessages, selectedRoom])
   
   return(
     <div className={styles.container} ref={container}>
@@ -33,7 +52,7 @@ export function MessagesContainer(){
         )
       ))}
 
-      <div></div>
+      <div ref={scrollMessage}/>
       <button 
         type='button'
         onClick={scrollToDown}

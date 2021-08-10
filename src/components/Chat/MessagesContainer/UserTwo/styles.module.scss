@@ -10,6 +10,12 @@
   margin: 2px 0px;
   padding: 5px 10px;
 
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  animation: slidein 0.3s;
+
   .arrow_left{
     position: absolute;
     left: -8px;
@@ -40,4 +46,16 @@
 .time{
   font-size: 12px;
   margin-left: auto;
+}
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
 }

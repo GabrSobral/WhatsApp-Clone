@@ -14,10 +14,8 @@ export function UserTwo({ message }){
       </span>
 
       {/* <span className='userTwo-name'>{message.user}</span> */}
-      <p className={styles.message}>
-        {message.message}
-        <span className={styles.time}>{formattedMessageDate}</span>
-      </p>
+      <p className={styles.message}>{message.message}</p>
+      <span className={styles.time}>{formattedMessageDate}</span>
       
     </div>
   )
