@@ -4,14 +4,16 @@ export function SignInput({
   setData,
   type = 'text',
   data ,
-  title
+  title,
+  bgColor = '#ffffff'
 }){
   return(
     <div className={`${styles.container} ${data && styles.is_filled}`}>
-      <span>{title}</span>
+      <span style={{ backgroundColor: bgColor }}>{title}</span>
       <input 
       value={data}
         type={type}
+        style={{ backgroundColor: bgColor }}
         onChange={
           (event) => { 
             setData(event.target.value); 
