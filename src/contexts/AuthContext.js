@@ -10,13 +10,13 @@ const AuthContext = createContext({})
 
 export function AuthProvider({ children }){
   const [ isAuthenticated, setIsAuthenticated ] = useState({})
-  const [ tokenJWT, setTokenJWT ] = useState({})
+  const [ myId, setMyId ] = useState('')
 
   useEffect(() => {
     const myToken = getToken()
     if(myToken){
       setIsAuthenticated(true)
-      setTokenJWT(parseJwt(myToken))
+      setMyId(parseJwt(myToken).id)
     }
   },[])
 
@@ -57,7 +57,7 @@ export function AuthProvider({ children }){
         SignIn,
         SignUp,
         isAuthenticated,
-        tokenJWT,
+        myId
       }}
     >
       {children}
