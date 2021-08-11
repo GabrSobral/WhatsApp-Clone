@@ -2,11 +2,13 @@ import { MdPerson } from 'react-icons/md'
 import { FaAngleDown } from 'react-icons/fa'
 import styles from './styles.module.scss'
 import { format } from 'date-fns'
+import { useUsers } from '../../../contexts/UsersContext'
 
 export function UserItem({
   room,
   handleSelectRoom
 }){
+  const { isFocused } = useUsers()
   const lastMessage = room.messages[room.messages.length - 1]
   const formattedMessageDate = room.messages.length !== 0 && 
     format(new Date(lastMessage.timestamp), "HH:mm")
@@ -32,7 +34,7 @@ export function UserItem({
         <div className={styles.message_and_counter}>
           { room.isWritting ? 
             <span className={styles.writting}>digitando...</span> : 
-            <span className={styles.lastMessage}>
+            <span className={`${styles.lastMessage} ${!isFocused && styles.blur}`}>
               {room.messages.length !== 0 && lastMessage.message}
             </span>
           }

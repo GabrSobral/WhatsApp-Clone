@@ -73,6 +73,10 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        &.blur{
+          filter: blur(5px);
+        }
       }
       > div{
         transition: 0.2s ease;

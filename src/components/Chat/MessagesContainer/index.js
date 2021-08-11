@@ -36,7 +36,7 @@ export function MessagesContainer(){
           const { data } = await api.get(
             `/room/messages/list/${selectedRoom._id}?last_message=${last_message}`
           )
-          handleAddPreviousMessages(data)
+          data.length !== 0 && handleAddPreviousMessages(data)
         }
       }
     }
