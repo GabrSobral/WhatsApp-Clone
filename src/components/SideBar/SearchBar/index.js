@@ -1,7 +1,7 @@
 import { MdSearch } from 'react-icons/md'
 import styles from './styles.module.scss'
 
-export function SearchBar({ value, setSearch }){
+export function SearchBar({ value, setSearch, placeholder }){
   return(
     <div className={styles.search_bar}>
       <div>
@@ -9,7 +9,7 @@ export function SearchBar({ value, setSearch }){
         <input
           value={value}
           type='text' 
-          placeholder='Procurar ou começar uma nova conversa' 
+          placeholder={placeholder}
           onChange={(event) => setSearch(event.target.value)}
         />
       </div>  

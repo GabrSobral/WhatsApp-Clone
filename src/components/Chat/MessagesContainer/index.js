@@ -14,7 +14,7 @@ import api from '../../../services/api'
 export function MessagesContainer(){
   const container = useRef()
   const scrollMessage = useRef()
-  const { selectedRoom, handleAddPreviousMessages } = useUsers()
+  const { selectedRoom, handleAddPreviousMessages, isFocused } = useUsers()
   const [ myId, setMyId ] = useState('')
 
   function scrollToDown(){ 
@@ -43,7 +43,8 @@ export function MessagesContainer(){
   },[handleAddPreviousMessages, selectedRoom])
   
   return(
-    <div className={styles.container} ref={container}>
+    <div className={`${styles.container} ${!isFocused && styles.blur}`} ref={container}>
+
       {selectedRoom.messages.map(message => (
         myId !== message.user ? (
           <UserTwo message={message} key={message._id}/>

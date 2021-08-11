@@ -28,19 +28,19 @@ export function Header(){
   return(
     <header className={styles.container}>
       <div className={styles.user_img}>
-        {/* <img src="https://github.com/GabrSobral.png" alt="Imagem de perfil"/> */}
-        <MdPerson size={32} color="#919191"/>
+        {/* <img src="https://github.com/GabrSobral.png" alt="Profile image"/> */}
+        <MdPerson size={24} color="#919191"/>
       </div>
-      <div className={styles.options_container}>
+      <div className={styles.options_container} title="Status (not developed yet)">
         <button type='button'>
           <MdDonutLarge size={23} color="#919191"/>
         </button>
 
-        <button type='button'>
+        <button type='button' title="">
           <MdSpeakerNotes size={23} color="#919191"/>
         </button>
 
-        <button type='button' onClick={() => {}}> 
+        <button type='button' onClick={() => {}} title="More options"> 
           <MdMoreVert size={23} color="#919191"/>
 
           <div className={styles.popup_more}>

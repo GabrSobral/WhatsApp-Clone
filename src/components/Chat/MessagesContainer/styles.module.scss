@@ -8,6 +8,11 @@
   padding: 20px 60px;
   overflow-y: scroll;
   overflow-x: hidden;
+  transition: 0.2s;
+
+  &.blur{
+    filter: blur(1rem);
+  }
 
   .go_to_down{
     width: 30px;

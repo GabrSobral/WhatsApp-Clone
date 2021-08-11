@@ -1,0 +1,74 @@
+.container{
+  position: relative;
+  min-width: 100%;
+  max-width: 100%;
+  border: 2px solid var(--gray-400);
+  border-radius: 7px;
+  overflow: hidden;
+
+  background-color: inherit;
+
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+
+  .user_img{
+    min-width: 3rem;
+    min-height: 3rem;
+    border-radius: 1.5rem;
+    background-color: var(--gray-100);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user_details{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    overflow-x: hidden;
+
+    >div{
+      display: flex;
+      justify-content: space-between;
+
+      .plus_icon{
+        svg{
+          transition: 0.3s;
+        }
+      }
+    }
+
+    span{
+      overflow-x: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .name{
+      font-weight: 500;
+      font-size: 1rem;
+      overflow: hidden;
+      max-width: 90%;
+    }
+    .last_seen{
+      text-align: right;
+      margin-left: auto;
+      font-size: 0.7rem;
+    }
+  }
+
+  &:hover{
+    border-color: var(--green-800);
+    span{
+      color: var(--green-800);
+    }
+    .plus_icon{
+      svg{
+        stroke: var(--green-800);
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
