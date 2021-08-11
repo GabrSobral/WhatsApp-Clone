@@ -86,7 +86,7 @@ export function SendMessageInput(){
         <input 
           value={newMessage} 
           type='text' 
-          placeholder='Digite uma mensagem' 
+          placeholder='Type a message' 
           onChange={
             (event)=> { setNewMessage(event.target.value) }
           }/>
