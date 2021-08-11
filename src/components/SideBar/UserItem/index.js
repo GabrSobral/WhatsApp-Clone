@@ -35,7 +35,7 @@ export function UserItem({
 
         <div className={styles.message_and_counter}>
           { room.isWritting ? 
-            <span className={styles.writting}>digitando...</span> : 
+            <span className={styles.writting}>typing...</span> : 
             <span className={`${styles.lastMessage} ${!isFocused && styles.blur}`}>
               {room.messages.length !== 0 && 
                 (lastMessage.user !== myId ? 
