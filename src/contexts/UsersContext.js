@@ -137,7 +137,7 @@ export function UsersProvider({ children }) {
 		console.log('handleAddPreviousMessages')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === prevMessages[0].assignedTo){
-				if(prevMessages.length < 10){
+				if(prevMessages.length < 50){
 					item.hasAllMessages = true
 				}
 				item.messages = prevMessages.concat(item.messages)
