@@ -1,15 +1,26 @@
-import { format } from 'date-fns'
 import { MdMoreVert, MdPerson, MdSearch } from 'react-icons/md'
+
+import { useAuth } from '../../../contexts/AuthContext'
 import { useUsers } from '../../../contexts/UsersContext'
+
+import api from '../../../services/api'
+import { socket } from '../../../services/socket'
+import { formatLastSeen } from '../../../utils/formatLastSeen'
+
 import styles from './styles.module.scss'
 
 export function ChatHeader(){
-  const { selectedRoom } = useUsers()
+  const { selectedRoom, handleRemoveRoomFromScreen } = useUsers()
+  const { myId } = useAuth()
 
   const formattedDate = selectedRoom.user[0] &&
-  format(
-    new Date(selectedRoom.user[0].lastOnline), 
-    "'visto por último ás' H:mm")
+  formatLastSeen(new Date(selectedRoom.user[0].lastOnline))
+
+  async function handleExcludeContact(){
+    await api.delete(`/room/delete/${selectedRoom._id}`)
+    handleRemoveRoomFromScreen(selectedRoom)
+    socket.emit('removeRoom', { user: myId, room: selectedRoom._id })
+  }
 
   return(
     <header className={styles.container}>
@@ -25,7 +36,15 @@ export function ChatHeader(){
       </div>
       <div className={styles.search_and_more}>
         <button type='button'><MdSearch size={23} color="#919191"/></button>
-        <button type='button'><MdMoreVert size={23} color="#919191"/></button>
+        <button type='button'>
+          <MdMoreVert size={23} color="#919191"/>
+
+          <nav>
+            <div onClick={handleExcludeContact}>
+              Delete contact and conversation
+            </div>
+          </nav>
+        </button>
       </div>
     </header>
   )

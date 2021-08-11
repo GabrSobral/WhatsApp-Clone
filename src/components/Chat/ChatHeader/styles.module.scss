@@ -56,6 +56,43 @@
       &:hover{
         background-color: var(--gray-400);
       }
+
+      &:last-child{
+        position: relative;
+        z-index: 20;
+
+        &:hover{
+          opacity: 1;
+        }
+
+        nav{
+          z-index: 20;
+          position: absolute;
+          right: 0;
+          top: 2rem;
+          display: none;
+          flex-direction: column;
+          background-color: var(--white);
+          border-radius: 5px;
+          overflow: hidden;
+
+          div{
+            z-index: 20;
+            white-space: nowrap;
+            padding: 1rem;
+
+            &:hover{
+              background-color: var(--gray-50);
+            }
+          }
+        }
+
+        &:focus-within{
+          nav{
+            display: flex;
+          }
+        }
+      }
     }
   }
 }
