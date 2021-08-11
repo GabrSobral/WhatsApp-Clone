@@ -101,14 +101,14 @@ export function UsersProvider({ children }) {
 
 		socket.on('receiveJoinNewRoom', ({ user, room }) => {
 			if(user === parseJwt(getToken()).id){ return }
-			socket.emit('joinNewRoom', { user, check: true})
+
+			socket.emit('joinNewRoom', { user_target: user, check: true})
 			setRooms(prevState => [room, ...prevState])
-			console.log('Novo usuário se conectou com você')
 		})
 		return () => socket.removeAllListeners()
 	},[selectedRoom, isFocused])
 
-	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
+	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
 	const handleFetchRooms = useCallback(async () => {
 		(async function(){
@@ -125,8 +125,12 @@ export function UsersProvider({ children }) {
 	function handleAddNewRoom(room){
 		setRooms(prevState => [ room, ...prevState ])
 		const { id } = parseJwt(getToken())
-		socket.emit('joinNewRoom', 
-			{room: room.user[0]._id, user: id, check: false})
+		socket.emit('joinNewRoom', {
+			user_target: room.user[0]._id, 
+			user: id, 
+			check: false,
+			room_id: room._id
+		})
 	}
 
 	const handleAddPreviousMessages = useCallback(async (prevMessages) => {

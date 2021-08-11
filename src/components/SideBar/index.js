@@ -16,6 +16,7 @@ export function SideBar(){
   useEffect(() => {
     document.addEventListener('click', (event) => {
       if(!event.target){ return }
+      console.log(event.target)
       const isClickInside = sideBarRef.current.contains(event.target)
       console.log(isClickInside)
       if(!isClickInside) {
