@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 
 import { useUsers } from '../../../contexts/UsersContext'
@@ -7,20 +7,18 @@ import { UserOne } from './UserOne'
 import { UserTwo } from './UserTwo'
 
 import styles from './styles.module.scss'
-import { parseJwt } from '../../../utils/parseJWT'
-import { getToken } from '../../../utils/handleToken'
 import api from '../../../services/api'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export function MessagesContainer(){
   const container = useRef()
   const scrollMessage = useRef()
   const { selectedRoom, handleAddPreviousMessages, isFocused } = useUsers()
-  const [ myId, setMyId ] = useState('')
+  const { myId } = useAuth('')
 
   function scrollToDown(){ 
     scrollMessage.current.scrollIntoView({ behavior: 'smooth'}) }
 
-  useEffect(() => { setMyId(parseJwt(getToken()).id) },[])
   useEffect(() => { scrollToDown() },[ selectedRoom.messages ])
 
   useEffect(() => {
