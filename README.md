@@ -9,7 +9,7 @@ Was made with:
   - Socket.IO
   - JsonWebToken
 
-The `backend` can be find <a href="https://github.com/GabrSobral/Real-time-chat-application">here<a>
+The `backend` can be found <a href="https://github.com/GabrSobral/Real-time-chat-application">here<a>
   
   ![ProjectImage](https://github.com/GabrSobral/React-time-chat-application-FRONTEND/blob/master/.github/Landing.png?raw=true)
 
