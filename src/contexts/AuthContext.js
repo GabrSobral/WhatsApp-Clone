@@ -25,6 +25,8 @@ export function AuthProvider({ children }){
       { email, password })
     
     login(data.token)
+    setMyId(parseJwt(data.token).id)
+
     setIsAuthenticated(true)
 
     api.interceptors.request.use(config => {

@@ -17,7 +17,12 @@ export function MessagesContainer(){
   const { myId } = useAuth('')
 
   function scrollToDown(){ 
-    scrollMessage.current.scrollIntoView({ behavior: 'smooth'}) }
+    scrollMessage.current.scrollIntoView({ behavior: 'smooth'})
+  }
+
+  useEffect(() => {
+    console.log(myId)
+  },[myId])
 
   useEffect(() => { scrollToDown() },[ selectedRoom.messages ])
 
