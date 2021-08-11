@@ -12,6 +12,7 @@ import { useUsers } from '../../../contexts/UsersContext.js'
 export function NewContact(){
   const { handleAddNewRoom } = useUsers()
   const [ username, setUsername ] = useState('')
+  const [ message, setMessage ] = useState('')
   const [ newUsers, setNewUsers ] = useState([])
   const [ isLoading, setIsLoading ] = useState(false)
   const [ isSearched, setIsSearched ] = useState(false)
@@ -22,6 +23,12 @@ export function NewContact(){
       setIsSearched(false)
     }
   },[username])
+
+  useEffect(() => {
+    isSearched ? 
+      setMessage(`Oops.. No user was found with this email, try to invite your friends to use this app!`) : 
+      setMessage(`Search for new users to start to talk!`)
+  },[ isSearched ])
 
   function handleSetUsername(value){ setUsername(value) }
 
@@ -35,9 +42,18 @@ export function NewContact(){
   }
 
   async function handleCreateNewRoom(user_id){
-    const { data } = await api.post(`/room/new/${user_id}`)
-
-    handleAddNewRoom(data)    
+    try{
+      const { data } = await api.post(`/room/new/${user_id}`)
+      handleAddNewRoom(data)
+    } catch(error){
+      if(error.response.data.error === "Room already exists") {
+        setMessage('You already add this user')
+        setNewUsers([])
+        return
+      }
+      setMessage(error.response.data.error)
+      setNewUsers([])
+    }
   }
 
   return(
@@ -74,20 +90,11 @@ export function NewContact(){
             onClick={() => handleCreateNewRoom(item._id)}
           />
         )) : (
-         <div className={styles.not_user_found}>
-           <FaWhatsapp size="6rem" fill="#d5d5d5"/>
-           <span>
-           { isSearched ? (
-              `Oops.. No user was found with this email, 
-              try to invite your friends to use this app!`
-           ) : (
-             `Search for new users to start to talk!`
-           )}
-          </span>
-
-           
-         </div>
-       )}
+          <div className={styles.not_user_found}>
+            <FaWhatsapp size="6rem" fill="#d5d5d5"/>
+            <span>{message}</span>
+          </div>
+        )}
      </div>
     </div>
   )

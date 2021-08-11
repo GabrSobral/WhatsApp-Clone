@@ -2,8 +2,7 @@ import axios from 'axios'
 import { getToken } from '../utils/handleToken';
 
 const api = axios.create({
-    // baseURL : "https://chat-api-sobral.herokuapp.com/"
-    baseURL : "http://localhost:3333"
+    baseURL : process.env.REACT_APP_API_URL
 })
 
 const token = getToken();

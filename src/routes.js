@@ -12,13 +12,11 @@ export default function Routes(){
 	const PrivateRoute = ({ render : Render, ...rest }) => (
 		<Route
 			{...rest}
-			render={props =>
-			isAuthenticated() ? (
+			render={props => isAuthenticated() ? (
 				<Render {...props} />
 			) : (
 				<Redirect to={{ pathname: "/SignUp", state: { from: props.location } }} />
-			)
-			}
+			)}
 		/>
 	);
 	

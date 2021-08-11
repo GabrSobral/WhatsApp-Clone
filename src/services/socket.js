@@ -6,4 +6,4 @@ const connectionOptions =  {
 	"timeout" : 10000,                  
 	"transports" : ["websocket"]
   };
-export const socket = io.connect('http://localhost:3333', connectionOptions);
+export const socket = io.connect(process.env.REACT_APP_API_URL, connectionOptions);

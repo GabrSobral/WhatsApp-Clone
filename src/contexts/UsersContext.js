@@ -1,12 +1,10 @@
 /* eslint-disable default-case */
-import React, { useState, useContext, createContext, useEffect } from 'react'
+import React, { useState, useContext, createContext, useEffect, useCallback } from 'react'
 
-import { parseJwt } from '../utils/parseJWT';
-import { getToken } from '../utils/handleToken';
+import { useAuth } from './AuthContext'
 
 import api from '../services/api.js'
 import { socket } from "../services/socket";
-import { useCallback } from 'react';
 
 const UsersContext = createContext('')
 
@@ -14,24 +12,51 @@ export function UsersProvider({ children }) {
 	const [ rooms, setRooms ] = useState([])
 	const [ selectedRoom, setSelectedRoom ] = useState()
 	const [ isFocused, setIsFocused ] = useState(true)
+	const { myId } = useAuth()
 
 	useEffect(() => {
-		if(!getToken()){ return }
+		if(!myId){ return }
+
+		window.onblur = () => {
+			socket.emit('imOnline', { 
+				user: myId, 
+				status: false, 
+				room: selectedRoom?._id
+			})
+			setIsFocused(false)
+		}
+		window.onfocus = () => {
+			socket.emit('imOnline', { 
+				user: myId, 
+				status: true, 
+				room: selectedRoom?._id 
+			})
+			if(selectedRoom){
+				socket.emit('viewUnreadMessages', 
+					{ user: myId, room: selectedRoom?._id })
+				setSelectedRoom(prevState => {
+					prevState.unreadMessages = 0
+					return prevState	
+				})
+			}
+			
+			setIsFocused(true)
+		}
 
 		socket.on('newMessage', ({ messageData, unreadMessages }) => {
-			if(parseJwt(getToken()).id === messageData.user){ return }
+			if(myId === messageData.user){ return }
 			setRooms(prevState => 
 				prevState.map(item => {		
 					if(item._id === messageData.assignedTo){
 	
 						if(unreadMessages.to === item._id){
 							if(!isFocused || selectedRoom?._id !== messageData.assignedTo){
-								if(unreadMessages.user !== parseJwt(getToken()).id){
+								if(unreadMessages.user !== myId){
 									item.unreadMessages++
 								}
 							} else {
 								socket.emit('viewUnreadMessages', 
-								{ user: parseJwt(getToken()).id, room: item._id })
+								{ user: myId, room: item._id })
 							}
 						}
 						item.messages = [...item.messages, messageData]
@@ -42,7 +67,7 @@ export function UsersProvider({ children }) {
 		})
 
 		socket.on('receiveWritting', ({ writting, room, to }) => {
-			if(to !== parseJwt(getToken()).id){ return }
+			if(to !== myId){ return }
 			setRooms((prevState) => (
 				prevState.map(item => {		
 					if(item._id === room){
@@ -54,7 +79,7 @@ export function UsersProvider({ children }) {
 		})
 
 		socket.on('receiveReadMessages', ({ room, user }) => {
-			if(user === parseJwt(getToken()).id){ return }
+			if(user === myId){ return }
 			setRooms(prevState => prevState.map(item => {
 				if(item._id !== room){ return item }
 				item.messages.forEach(message => message.viewed = true)
@@ -62,34 +87,8 @@ export function UsersProvider({ children }) {
 			}))
 		})
 
-		window.onblur = () => {
-			socket.emit('imOnline', { 
-				user: parseJwt(getToken()).id, 
-				status: false, 
-				room: selectedRoom?._id
-			})
-			setIsFocused(false)
-		}
-		window.onfocus = () => {
-			socket.emit('imOnline', { 
-				user: parseJwt(getToken()).id, 
-				status: true, 
-				room: selectedRoom?._id 
-			})
-			if(selectedRoom){
-				socket.emit('viewUnreadMessages', 
-					{ user: parseJwt(getToken()).id, room: selectedRoom?._id })
-				setSelectedRoom(prevState => {
-					prevState.unreadMessages = 0
-					return prevState	
-				})
-			}
-			
-			setIsFocused(true)
-		}
-
 		socket.on('receiveImOnline', ({ user, status, room }) => {
-			if(parseJwt(getToken()).id === user){ return }
+			if(myId === user){ return }
 			setRooms(prevState => prevState.map(item => {
 				if(item._id === room){
 					item.user[0].isOnline = status
@@ -100,40 +99,56 @@ export function UsersProvider({ children }) {
 		})
 
 		socket.on('receiveJoinNewRoom', ({ user, room }) => {
-			if(user === parseJwt(getToken()).id){ return }
-			socket.emit('joinNewRoom', { user, check: true})
+			if(user === myId){ return }
+
+			socket.emit('joinNewRoom', { user_target: user, check: true})
 			setRooms(prevState => [room, ...prevState])
-			console.log('Novo usuário se conectou com você')
+		})
+
+		socket.on('receiveRemoveRoom', ({ room, user }) => {
+			if(user === myId){ return }
+			selectedRoom?._id === room && setSelectedRoom(undefined)
+			setRooms(prevState => {
+				const newState = []
+				prevState.forEach((item) => {
+					item._id !== room && newState.push(item)
+				})
+				return newState
+			})
+			socket.emit('removeRoom', { 
+				user_target: user,
+				check: true
+			})
 		})
 		return () => socket.removeAllListeners()
-	},[selectedRoom, isFocused])
+	},[selectedRoom, isFocused, myId])
 
-	useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
+	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
 
 	const handleFetchRooms = useCallback(async () => {
 		(async function(){
-			console.log('handleFetchRooms')
 			const { data } = await api.get('room/list')
-			const { id } = parseJwt(getToken())
 			setRooms(data)
 	
 			const myRooms = data.map(item => item.user[0]._id)
-			socket.emit('joinroom', {rooms: [...myRooms, id]})
+			socket.emit('joinroom', {rooms: [...myRooms, myId]})
 		})()
-	},[])
+	},[myId])
 
 	function handleAddNewRoom(room){
 		setRooms(prevState => [ room, ...prevState ])
-		const { id } = parseJwt(getToken())
-		socket.emit('joinNewRoom', 
-			{room: room.user[0]._id, user: id, check: false})
+		socket.emit('joinNewRoom', {
+			user_target: room.user[0]._id, 
+			user: myId, 
+			check: false,
+			room_id: room._id
+		})
 	}
 
 	const handleAddPreviousMessages = useCallback(async (prevMessages) => {
-		console.log('handleAddPreviousMessages')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === prevMessages[0].assignedTo){
-				if(prevMessages.length < 10){
+				if(prevMessages.length < 50){
 					item.hasAllMessages = true
 				}
 				item.messages = prevMessages.concat(item.messages)
@@ -143,7 +158,6 @@ export function UsersProvider({ children }) {
 	},[])
 
 	function handleAddMessageToRoom(message){
-		console.log('handleAddMessageToRoom')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
 				item.messages = [...item.messages, message]
@@ -152,7 +166,6 @@ export function UsersProvider({ children }) {
 		}))
 	}
 	function handleUpdateMessagesSent(message){
-		console.log('handleUpdateMessagesSent')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
 				item.messages.map(messageItem => {
@@ -168,10 +181,9 @@ export function UsersProvider({ children }) {
 
 	async function handleSelectRoom(room){ 
 		if(room._id === selectedRoom?._id){ return }
-		console.log('handleSelectRoom')
 		if(room.unreadMessages !== 0){
 			socket.emit('viewUnreadMessages', 
-			{ user: parseJwt(getToken()).id, room: room._id })
+			{ user: myId, room: room._id })
 			room.unreadMessages = 0
 		}
 		
@@ -188,6 +200,24 @@ export function UsersProvider({ children }) {
 			setSelectedRoom(room)
 		}	
   }
+	function handleRemoveRoomFromScreen(room){
+		selectedRoom?._id === room._id && setSelectedRoom(undefined)
+		setRooms(prevState => {
+			const newState = []
+			prevState.forEach((item) => {
+				item._id !== room._id && newState.push(item)
+			})
+			return newState
+		})
+
+		socket.emit('removeRoom', { 
+			user_target: room.user[0]._id,
+			user: myId,
+			room: room._id,
+			check: false
+		})
+		return () => socket.removeAllListeners()
+	}
 
 	return(
 		<UsersContext.Provider 
@@ -201,7 +231,8 @@ export function UsersProvider({ children }) {
 				handleUpdateMessagesSent,
 				handleAddPreviousMessages,
 				isFocused,
-				handleAddNewRoom
+				handleAddNewRoom,
+				handleRemoveRoomFromScreen
 			}}
 		>
 			{children} 

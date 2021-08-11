@@ -5,7 +5,6 @@ export function Slide({ show, children }){
   const [ shouldRender, setRender ] = useState(show);
 
   useEffect(() => {
-    console.log('banananaaa', show)
     if (show){ setRender(true) };
   }, [show]);
 
