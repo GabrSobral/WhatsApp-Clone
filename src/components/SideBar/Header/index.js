@@ -45,7 +45,7 @@ export function Header(){
 
           <div className={styles.popup_more}>
             <div className={styles.button}type='button' onClick={Logout}>
-              Desconectar
+              Disconnect
             </div>
           </div>
         </button>

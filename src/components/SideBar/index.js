@@ -12,7 +12,6 @@ export function SideBar(){
   const [ showNewContact, setShowNewContact ] = useState(false)
   const sideBarRef = useRef(null)
 
-
   useEffect(() => {
     document.addEventListener('click', (event) => {
       if(!event.target || !sideBarRef.current){ return }
