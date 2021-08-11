@@ -1,6 +1,14 @@
 # WhatsApp Clone <img alt="WhatsApp" src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white"/>
 
 This is a WhatsApp clone, and was built as a study of socket.io and its integration with ReactJS.
+Was made with: 
+  - ReactJS
+  - Nodejs
+  - MongoDB
+  - Typescript and Javascript
+  - Socket.IO
+  - JsonWebToken
+
 The `backend` can be find <a href="https://github.com/GabrSobral/Real-time-chat-application">here<a>
   
   ![ProjectImage](https://github.com/GabrSobral/React-time-chat-application-FRONTEND/blob/master/.github/Landing.png?raw=true)
