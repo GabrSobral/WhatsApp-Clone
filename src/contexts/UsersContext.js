@@ -112,7 +112,6 @@ export function UsersProvider({ children }) {
 
 	const handleFetchRooms = useCallback(async () => {
 		(async function(){
-			console.log('handleFetchRooms')
 			const { data } = await api.get('room/list')
 			const { id } = parseJwt(getToken())
 			setRooms(data)
@@ -134,7 +133,6 @@ export function UsersProvider({ children }) {
 	}
 
 	const handleAddPreviousMessages = useCallback(async (prevMessages) => {
-		console.log('handleAddPreviousMessages')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === prevMessages[0].assignedTo){
 				if(prevMessages.length < 50){
@@ -147,7 +145,6 @@ export function UsersProvider({ children }) {
 	},[])
 
 	function handleAddMessageToRoom(message){
-		console.log('handleAddMessageToRoom')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
 				item.messages = [...item.messages, message]
@@ -156,7 +153,6 @@ export function UsersProvider({ children }) {
 		}))
 	}
 	function handleUpdateMessagesSent(message){
-		console.log('handleUpdateMessagesSent')
 		setRooms(prevState => prevState.map(item => {
 			if(item._id === message.assignedTo){
 				item.messages.map(messageItem => {
@@ -172,7 +168,6 @@ export function UsersProvider({ children }) {
 
 	async function handleSelectRoom(room){ 
 		if(room._id === selectedRoom?._id){ return }
-		console.log('handleSelectRoom')
 		if(room.unreadMessages !== 0){
 			socket.emit('viewUnreadMessages', 
 			{ user: parseJwt(getToken()).id, room: room._id })
