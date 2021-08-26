@@ -36,9 +36,8 @@ export function Header(){
       <div 
         className={styles.options_container} 
         title="Status (not developed yet)"
-        onClick={handleStatusOpen}
       >
-        <button type='button'>
+        <button type='button' onClick={handleStatusOpen}>
           <MdDonutLarge size={23} color="#919191"/>
         </button>
 

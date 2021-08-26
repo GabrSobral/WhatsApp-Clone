@@ -11,16 +11,10 @@ export function SideBarStatus(){
         <div className={styles.status_list}>
           <span className={styles.title}>RECENT</span>
           <StatusItem/>
-          <StatusItem/>
-          <StatusItem/>
         </div>
 
         <div className={styles.status_list}>
           <span className={styles.title}>VIEWED</span>
-          <StatusItem/>
-          <StatusItem/>
-          <StatusItem/>
-          <StatusItem/>
           <StatusItem/>
         </div>
       </div>
