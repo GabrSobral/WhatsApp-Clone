@@ -1,0 +1,50 @@
+.container_absolute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.container{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.199);
+
+  display: flex;
+
+  aside{
+    max-width: 30%;
+    min-width: 30%;
+    background-color: transparent;
+  }
+  .main_status_page{
+    position: relative;
+    max-width: 70%;
+    min-width: 70%;
+    background-color: var(--black);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .close_status{
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      background-color: transparent;
+      border: 0;
+    }
+
+    > div{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+}

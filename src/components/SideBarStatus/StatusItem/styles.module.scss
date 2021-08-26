@@ -1,0 +1,38 @@
+.status_item{
+  background-color: transparent;
+  border-radius: 0;
+  border: 0;
+  width: calc(100% + 2rem);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 1rem;
+  text-align: left;
+
+  transform: translateX(-1rem);
+
+  &:hover{
+    background-color: var(--gray-900);
+  }
+
+  .status_preview{
+    min-width: 3rem;
+    min-height: 3rem;
+    border-radius: 1.5rem;
+    background-color: var(--gray-900);
+  }
+  div:last-child{
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    span:first-child{ 
+      font-size: 1rem;
+      color: var(--white);
+    }
+    span:last-child{
+      font-size: 0.8rem;
+    }
+  }
+
+}
