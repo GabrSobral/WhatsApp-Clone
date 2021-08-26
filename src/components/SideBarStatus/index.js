@@ -1,8 +1,11 @@
+import { useStatus } from '../../contexts/StatusContext'
 import { HeaderStatus } from './HeaderStatus'
 import { StatusItem } from './StatusItem'
 import styles from './styles.module.scss'
 
 export function SideBarStatus(){
+  const { viewedStatus, recentStatus } = useStatus()
+
   return(
     <div className={styles.container}>
       <HeaderStatus/>
@@ -10,12 +13,14 @@ export function SideBarStatus(){
       <div className={styles.status_container_list}>
         <div className={styles.status_list}>
           <span className={styles.title}>RECENT</span>
-          <StatusItem/>
+          { recentStatus.map(
+            item => <StatusItem key={item.owner._id} item={item}/> )}
         </div>
 
         <div className={styles.status_list}>
           <span className={styles.title}>VIEWED</span>
-          <StatusItem/>
+          { viewedStatus.map(
+            item => <StatusItem key={item.owner._id} item={item}/> )}
         </div>
       </div>
     </div>
