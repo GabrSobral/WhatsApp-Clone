@@ -6,6 +6,7 @@ import SignIn from './pages/SignIn'
 import { isAuthenticated } from './utils/handleToken.js';
 import { Main } from './pages/Main/index.js';
 import { UsersProvider } from './contexts/UsersContext';
+import { StatusProvider } from './contexts/StatusContext';
 
 export default function Routes(){
 
@@ -25,7 +26,9 @@ export default function Routes(){
 			<Switch>
 				<PrivateRoute exact path='/' render={() => (
 					<UsersProvider>
-						<Main/>
+						<StatusProvider>
+							<Main/>
+						</StatusProvider>
 					</UsersProvider>
 				)}/>
 

@@ -5,6 +5,7 @@ import {
   MdSpeakerNotes 
 } from "react-icons/md";
 import { useHistory } from "react-router-dom";
+import { useStatus } from "../../../contexts/StatusContext";
 import api from "../../../services/api";
 import { socket } from "../../../services/socket";
 import { getToken, logout } from "../../../utils/handleToken";
@@ -14,6 +15,7 @@ import styles from './styles.module.scss'
 
 export function Header(){
   const { push } = useHistory()
+  const { handleStatusOpen } = useStatus()
 
   async function Logout(){
 		await api.patch('/users/logout')
@@ -31,7 +33,11 @@ export function Header(){
         {/* <img src="https://github.com/GabrSobral.png" alt="Profile image"/> */}
         <MdPerson size={24} color="#919191"/>
       </div>
-      <div className={styles.options_container} title="Status (not developed yet)">
+      <div 
+        className={styles.options_container} 
+        title="Status (not developed yet)"
+        onClick={handleStatusOpen}
+      >
         <button type='button'>
           <MdDonutLarge size={23} color="#919191"/>
         </button>

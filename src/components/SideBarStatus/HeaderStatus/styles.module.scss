@@ -1,0 +1,37 @@
+header{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 0;
+  z-index: 15;
+
+  .my_status_container {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+
+    .my_status_photo {
+      min-height: 2.5rem;
+      min-width: 2.5rem;
+      border-radius: 1.25rem;
+      background-color: yellowgreen;
+    }
+
+    div:last-child{
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      span:first-child{
+        font-size: 1rem;
+        color: var(--white);
+      }
+      span:last-child{
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
