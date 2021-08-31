@@ -1,18 +1,29 @@
-header{
+.container{
+  position: fixed;
+  top: 0;
   width: 100%;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.658), transparent);
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  padding: 1.5rem 0;
-  z-index: 15;
+  gap: 1rem;
+  
+  & > button {
+    background-color: transparent;
+    height: auto;
+    width: auto;
+    border-radius: 0;
+    border: 0;
+  }
 
-  .my_status_container {
+  .active_status_container {
     width: 100%;
     height: fit-content;
     display: flex;
     align-items: center;
     gap: 0.7rem;
 
-    .my_status_photo {
+    .active_status_photo {
       min-height: 2.5rem;
       min-width: 2.5rem;
       border-radius: 1.25rem;

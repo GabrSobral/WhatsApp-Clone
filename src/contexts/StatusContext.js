@@ -9,6 +9,7 @@ export function StatusProvider({ children }) {
   const [ viewedStatus, setViewedStatus ] = useState([])
   const [ isStatusOpen, setIsStatusOpen ] = useState(false)
   const [ selectedStatus, setSelectedStatus ] = useState()
+  const [ index, setIndex ] = useState(0)
 
   useEffect(() => {
     (async () => {
@@ -30,7 +31,24 @@ export function StatusProvider({ children }) {
     setIsStatusOpen(!isStatusOpen); 
     setSelectedStatus(null) 
   }
-  function handleSelectStatus(status){ setSelectedStatus(status) }
+  function handleSelectStatus(status){
+    if(status){ status.status[index].viewed = true }
+    setSelectedStatus(status) 
+    setIndex(0)
+  }
+
+  function handleIndex(command){
+    if(command === "next"){
+    
+      if(index >= selectedStatus.status.length - 1) { setIndex(0) } 
+      else{ setIndex(prevState => prevState + 1) }
+
+    } else {
+
+      if(index <= 0){ setIndex(selectedStatus.status.length - 1) }
+      else{ setIndex(prevState => prevState - 1) }
+    }
+  }
 
   return(
     <StatusContext.Provider
@@ -41,7 +59,9 @@ export function StatusProvider({ children }) {
         handleSelectStatus,
         myStatus,
         viewedStatus,
-        recentStatus
+        recentStatus,
+        handleIndex,
+        index
       }}
     >
       {children}
