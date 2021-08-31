@@ -39,7 +39,6 @@ export function StatusProvider({ children }) {
 
   function handleIndex(command){
     if(command === "next"){
-    
       if(index >= selectedStatus.status.length - 1) { setIndex(0) } 
       else{ setIndex(prevState => prevState + 1) }
 

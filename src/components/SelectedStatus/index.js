@@ -37,7 +37,9 @@ export function SelectedStatus(){
               <p>{selectedStatus?.status[index].message}</p>
             </>
           ) : (
-            <p className={styles.message_without_file}>{selectedStatus?.status[index].message}</p>
+            <p className={styles.message_without_file}>
+              {selectedStatus?.status[index].message}
+            </p>
           ) }
           
         </div>
