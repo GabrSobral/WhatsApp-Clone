@@ -20,9 +20,8 @@ export function AuthProvider({ children }){
     }
   },[])
 
-  async function SignIn(email, password){
-    const { data } = await api.post('/users/authenticate', 
-      { email, password })
+  async function SignIn(phoneNumber){
+    const { data } = await api.post('/users/authenticate', { phoneNumber })
     
     login(data.token)
     setMyId(parseJwt(data.token).id)
@@ -35,12 +34,11 @@ export function AuthProvider({ children }){
       }
       return config
     })
-
     return data
   }
-  async function SignUp(name, email, password){
+  async function SignUp(name, phoneNumber){
     const { data } = await api.post('/users/register', 
-      { name, email, password })
+      { name, phoneNumber })
     
     login(data.token)
     setIsAuthenticated(true)

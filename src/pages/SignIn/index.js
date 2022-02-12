@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { SignButton } from '../../components/SignButton/index.js';
 import { SignInput } from '../../components/SignInput/index.js';
@@ -7,36 +7,25 @@ import { useAuth } from '../../contexts/AuthContext.js'
 import styles from './styles.module.scss'
 
 export default function SignInPage() {
-  const [ password, setPassword ] = useState('')
-  const [ email, setEmail ] = useState('') 
+  const [ phoneNumber, setPhoneNumber ] = useState('') 
   const [ warning, setWarning ] = useState('') 
-	const [ isFilled, setIsFilled ] = useState(false)
 	const [ isLoading, setIsLoading ] = useState(false)
 
 	const { SignIn } = useAuth()
-
   const history = useHistory()
-
-	useEffect(() => {
-		email && password ? setIsFilled(true) : setIsFilled(false)
-	},[email, password])
-
-	function handleSetEmail(value){ setEmail(value) }
-	function handleSetPassword(value){ setPassword(value) }
 
   async function signIn(event){
 		event.preventDefault()
 		setIsLoading(true)
-		email.trim()
+		phoneNumber.trim()
 		try{
-			await SignIn(email, password)
+			await SignIn(phoneNumber)
 			setIsLoading(false)
 			history.push('/')
 			return
 		} catch(error){
 			console.log(error.response.data)
 			setWarning(error.response.data.error)
-			setPassword('')
 			setIsLoading(false)
 			return
 		}
@@ -44,40 +33,35 @@ export default function SignInPage() {
   return(
     <div className={styles.login_page}>
 			<div className={styles.login_form}>
-				<span className={styles.title}>Entrar</span>
+				<span className={styles.title}>Sign In</span>
           
         <form onSubmit={signIn}>
           <SignInput
-						data={email}
-						setData={handleSetEmail}
-						type="email"
-						title="Email:"
-					/>
-
-					<SignInput
-						data={password}
-						setData={handleSetPassword}
-						type="password"
-						title="Senha:"
+						data={phoneNumber}
+						setData={(value) => setPhoneNumber(value)}
+						type="phoneNumber"
+						title="Phone number:"
 					/>
 
           <div className={styles.remember_and_forgotPassword}>
 						<div>
 							<input type='checkbox' id={styles.remember}/>
-							<label htmlFor={styles.remember}>Lembrar-se</label>
+							<label htmlFor={styles.remember}>Remember me</label>
 						</div>
-						<Link to=''>Esqueci minha senha</Link>
+						<Link to=''>Forgot Password</Link>
           </div>
 
           {warning && <span className={styles.message}>{warning}</span>}
 					
 					<SignButton
-						isFilled={isFilled}
+						isFilled={phoneNumber}
 						isLoading={isLoading}
+						disabled={!phoneNumber}
+						title="Sign in"
 					/>
         </form> 
         <div className={styles.sign}>
-					<Link to='/SignUp'>Não tem uma conta? Clique aqui!</Link>  
+					<Link to='/SignUp'>Do not have an account yet? Click here!</Link>  
         </div>  
       </div>
     </div>
