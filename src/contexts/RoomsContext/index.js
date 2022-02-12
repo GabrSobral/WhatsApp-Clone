@@ -1,5 +1,4 @@
 import React, { 
-	useState, 
 	useContext, 
 	createContext, 
 	useEffect, 
@@ -7,56 +6,61 @@ import React, {
 	useReducer } from 'react'
 
 import { useAuth } from '../AuthContext'
-import { RoomsReducer } from '../reducer'
+import { RoomsReducer } from './reducer'
 
 import api from '../../services/api.js'
 import { socket } from "../../services/socket";
 
-const UsersContext = createContext('')
+const RoomsContext = createContext('')
 
-export function UsersProvider({ children }) { 
-	const initialState = {
-		selectedRoom: null,
-		rooms: [],
-		isFocused: true
-	};
-	const { RoomState, RoomDispatch } = useReducer(RoomsReducer, initialState);
-	const { myId } = useAuth()
+const initialState = {
+	selectedIndex: null,
+	rooms: [],
+	isFocused: true
+};
+
+export function RoomsProvider({ children }) { 
+	const [ RoomState, RoomDispatch ] = useReducer(RoomsReducer, initialState);
+	const { myId } = useAuth();
 
 	useEffect(() => {
 		if(!myId) return;
 
 		window.onblur = () => {
+			RoomDispatch({ type: "handle_is_focused" });
 			socket.emit('imOnline', { 
 				user: myId, 
 				status: false, 
-				room: RoomState.selectedRoom?._id
+				rooms: RoomState.rooms
 			});
-			RoomDispatch({ type: "handle_is_focused" });
 		}
 		window.onfocus = () => {
+			RoomDispatch({ type: "handle_is_focused" });
 			socket.emit('imOnline', { 
 				user: myId, 
 				status: true, 
-				room: RoomState.selectedRoom?._id 
-			})
-			if(RoomState.selectedRoom){
-				socket.emit('viewUnreadMessages', { 
-					user: myId,
-					room: RoomState.selectedRoom?._id 
-				});
-
-				RoomDispatch({ type: "read_unread_messages" });
+				rooms: RoomState.rooms
+			});
+			
+			if(RoomState.selectedIndex){
+				const roomId = RoomState.rooms[RoomState.selectedIndex]._id;
+				socket.emit('viewUnreadMessages', { user: myId, room: roomId });
+				RoomDispatch({ type: "read_unread_messages", payload: { room: roomId }});
 			}
-			RoomDispatch({ type: "handle_is_focused" });
 		}
 
-		socket.on('newMessage', ({ messageData, unreadMessages }) => {
-			if(myId === messageData.user) return;
+		socket.on('receive_fetch_rooms', ({ rooms }) => {
+			RoomDispatch({ type: "set_rooms", payload: { rooms }})
+		});
+
+		socket.on('newMessage', ({ message, unreadMessages }) => {
+			if(myId === message.user) 
+				return RoomDispatch({ type: "update_message_sent", payload: { message }});
+			
 			RoomDispatch({
 				type: "new_message",
 				payload: { 
-					messageData, 
+					messageData: message, 
 					unreadMessages,
 					userId: myId,
 				}
@@ -80,7 +84,7 @@ export function UsersProvider({ children }) {
 		});
 
 		socket.on('receiveImOnline', ({ user, status, room }) => {
-			if(myId === user){ return }
+			if(myId === user) return;
 			RoomDispatch({
 				type: "receive_Im_online",
 				payload: { room, status }
@@ -88,9 +92,8 @@ export function UsersProvider({ children }) {
 		});
 
 		socket.on('receiveJoinNewRoom', ({ user, room }) => {
-			if(user === myId) return;
-
-			socket.emit('joinNewRoom', { user_target: user, check: true})
+			RoomDispatch({ type: "add_room", payload: { room }});
+			socket.emit('joinNewRoom', { user_target: user, check: true});
 			RoomDispatch({
 				type: "receive_join_new_room",
 				payload: { room }
@@ -101,31 +104,27 @@ export function UsersProvider({ children }) {
 			if(user === myId) return;
 
 			RoomDispatch({
-				type: "receive_remove_room",
-				payload: { }
-			})
+				type: "remove_room",
+				payload: { room }
+			});
 
 			socket.emit('removeRoom', { 
 				user_target: user,
 				check: true
-			})
-		})
-		return () => socket.removeAllListeners()
-	},[RoomDispatch, RoomState.selectedRoom, myId])
+			});
+		});
 
-	// useEffect(() => { console.log("Rooms", rooms) }, [ rooms ])
+		return () => socket.removeAllListeners();
+	},[RoomDispatch, RoomState.selectedIndex, RoomState.rooms, myId])
 
 	const handleFetchRooms = useCallback(async () => {
-		(async function(){
-			const { data } = await api.get('/room/list')
-			RoomDispatch({ type: "set_rooms", payload: { rooms: data }});
-	
-			const myRooms = data.map(item => item.user[0]._id)
-			socket.emit('joinroom', {rooms: [...myRooms, myId]})
-		})()
-	},[myId, RoomDispatch])
+		if(myId)
+			socket.emit('fetch_rooms', { user_id: myId });
+	},[myId])
 
-	function handleAddNewRoom(room){
+	const handleAddNewRoom = useCallback((room) => {
+		if(!myId) return;
+		
 		RoomDispatch({ type: "add_room", payload: { room } });
 
 		socket.emit('joinNewRoom', {
@@ -133,52 +132,32 @@ export function UsersProvider({ children }) {
 			user: myId, 
 			check: false,
 			room_id: room._id
-		})
-	}
+		});
+	},[RoomDispatch, myId]);
 
-	const handleAddPreviousMessages = useCallback(async (prevMessages) => {
-		RoomDispatch({ type: "add_prev_messages", payload: { prevMessages } })
-	},[RoomDispatch])
+	const handleSelectRoom = useCallback(async index => {
+		if(index === RoomState.selectedIndex || (typeof index !== "number")) return;
+		
+		RoomDispatch({ type: "select_room", payload: { index }});
+		const room = RoomState.rooms[index];
 
-	function handleAddMessageToRoom(message) {
-		RoomDispatch({ type: "handle_add_message_to_room", payload: { message }})
-	}
-	
-	function handleUpdateMessagesSent(message){
-		RoomDispatch({ type: "handle_update_message_sent", payload: { message }})
-	}
-
-	async function handleSelectRoom(room){ 
-		if(room._id === selectedRoom?._id) return;
-		if(room.unreadMessages !== 0){
-			socket.emit('viewUnreadMessages', 
-			{ user: myId, room: room._id })
-			room.unreadMessages = 0
+		if(room?.unreadMessages !== 0) {
+			socket.emit('viewUnreadMessages', { user: myId, room: room._id });
+			room.unreadMessages = 0;
 		}
 		
-		if(room.hasMessages){ 
-			setSelectedRoom(room)
-			return 
-		} else {
-			const { data } = await api.get(`room/messages/list/${room._id}`)
-			if(data.length > 1) { 
-				data.splice((data.length - room.messages.length), room.messages.length)
-				room.messages = data.concat(room.messages)
-			}
-			room.hasMessages = true
-			setSelectedRoom(room)
-		}	
-  }
+		if(!room.hasMessages) {
+			const { data } = await api.get(`room/messages/list/${room._id}`);
+			RoomDispatch({ type: "set_has_messages", payload: { messages: data, room }});
+		}
 
-	function handleRemoveRoomFromScreen(room){
-		selectedRoom?._id === room._id && setSelectedRoom(undefined)
-		setRooms(prevState => {
-			const newState = []
-			prevState.forEach((item) => {
-				item._id !== room._id && newState.push(item)
-			})
-			return newState
-		})
+	},[RoomDispatch, myId, RoomState]);
+
+	const handleRemoveRoomFromScreen = useCallback((room) => {
+		if (RoomState.rooms[RoomState.selectedIndex]._id === room._id)
+			RoomDispatch({ type: "selectRoom", payload: { room: null }});
+
+		RoomDispatch({ type: "remove_room", payload: { room }});
 
 		socket.emit('removeRoom', { 
 			user_target: room.user[0]._id,
@@ -187,29 +166,26 @@ export function UsersProvider({ children }) {
 			check: false
 		})
 		return () => socket.removeAllListeners()
-	}
+	},[RoomDispatch, RoomState.selectedIndex, RoomState.rooms, myId]);
 
 	return(
-		<UsersContext.Provider 
+		<RoomsContext.Provider 
 			value={{
-				rooms,
-				setSelectedRoom,
-				selectedRoom,
-				handleAddMessageToRoom,
+				rooms: RoomState.rooms,
+				selectedRoom: RoomState.rooms[RoomState.selectedIndex],
+				isFocused: RoomState.isFocused,
+				RoomDispatch,
 				handleSelectRoom,
 				handleFetchRooms,
-				handleUpdateMessagesSent,
-				handleAddPreviousMessages,
-				isFocused,
 				handleAddNewRoom,
 				handleRemoveRoomFromScreen
 			}}
 		>
 			{children} 
-		</UsersContext.Provider>
+		</RoomsContext.Provider>
 	)
 }
 
-export function useUsers() {
-	return useContext(UsersContext)
+export function useRooms() {
+	return useContext(RoomsContext)
 }

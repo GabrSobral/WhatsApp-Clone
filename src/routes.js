@@ -5,8 +5,8 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import { isAuthenticated } from './utils/handleToken.js';
 import { Main } from './pages/Main/index.js';
-import { UsersProvider } from './contexts/UsersContext';
 import { StatusProvider } from './contexts/StatusContext';
+import { RoomsProvider } from './contexts/RoomsContext';
 
 export default function Routes(){
 
@@ -25,11 +25,11 @@ export default function Routes(){
 		<BrowserRouter>
 			<Switch>
 				<PrivateRoute exact path='/' render={() => (
-					<UsersProvider>
+					<RoomsProvider>
 						<StatusProvider>
 							<Main/>
 						</StatusProvider>
-					</UsersProvider>
+					</RoomsProvider>
 				)}/>
 
 				<Route path='/signUp' component={SignUp}/>
