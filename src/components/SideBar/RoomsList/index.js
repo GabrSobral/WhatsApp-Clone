@@ -1,29 +1,22 @@
 import { useState } from 'react'
-import { useUsers } from '../../../contexts/UsersContext'
+import { useRooms } from '../../../contexts/RoomsContext'
 import { SearchBar } from '../SearchBar'
 import { UserItem } from '../UserItem'
 import styles from './styles.module.scss'
 
 export function RoomsList(){
-  const { rooms, handleSelectRoom } = useUsers()
+  const { rooms } = useRooms()
   const [ search, setSearch ] = useState('')
 
-  function handleSetSearch(value){ setSearch(value) }
-  
   return(
     <div className={styles.chats}>
       <SearchBar
         value={search}
-        setSearch={handleSetSearch}
+        setSearch={(value) => setSearch(value)}
         placeholder="Search your contacts"
       />
-      { rooms.map((room) => (
-        <UserItem
-          key={room._id}
-          room={room}
-          handleSelectRoom={handleSelectRoom}
-        />
-      ))}
+      { rooms.map((room, index) => 
+        <UserItem key={room._id} room={room} index={index}/> )}
     </div>
   )
 }
