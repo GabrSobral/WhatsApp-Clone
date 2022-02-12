@@ -14,11 +14,11 @@ export function SideBar(){
 
   useEffect(() => {
     document.addEventListener('click', (event) => {
-      if(!event.target || !sideBarRef.current){ return }
+      if(!event.target || !sideBarRef.current) return;
+      
       const isClickInside = sideBarRef.current.contains(event.target)
-      if(!isClickInside) {
+      if(!isClickInside)
         setShowNewContact(false)
-      }
     });
   },[])
 

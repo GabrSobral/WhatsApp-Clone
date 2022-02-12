@@ -1,7 +1,7 @@
 import { MdMoreVert, MdPerson, MdSearch } from 'react-icons/md'
 
 import { useAuth } from '../../../contexts/AuthContext'
-import { useUsers } from '../../../contexts/UsersContext'
+import { useRooms } from '../../../contexts/RoomsContext'
 
 import api from '../../../services/api'
 import { socket } from '../../../services/socket'
@@ -10,7 +10,7 @@ import { formatLastSeen } from '../../../utils/formatLastSeen'
 import styles from './styles.module.scss'
 
 export function ChatHeader(){
-  const { selectedRoom, handleRemoveRoomFromScreen } = useUsers()
+  const { selectedRoom, handleRemoveRoomFromScreen } = useRooms()
   const { myId } = useAuth()
 
   const formattedDate = selectedRoom.user[0] &&

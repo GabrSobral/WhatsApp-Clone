@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { FiPlus } from 'react-icons/fi'
 import { MdPerson } from 'react-icons/md'
+
 import styles from './styles.module.scss'
 
 export function NewUserItem({ name, email, last_seen, isOnline, ...rest }){

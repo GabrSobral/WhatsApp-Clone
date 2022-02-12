@@ -7,52 +7,55 @@ import { SignButton } from '../../SignButton'
 
 import { NewUserItem } from './NewUserItem'
 import styles from './styles.module.scss'
-import { useUsers } from '../../../contexts/UsersContext.js'
+import { useRooms } from '../../../contexts/RoomsContext'
+import { useAuth } from '../../../contexts/AuthContext.js'
 
 export function NewContact(){
-  const { handleAddNewRoom } = useUsers()
-  const [ username, setUsername ] = useState('')
+  const { handleAddNewRoom } = useRooms()
+  const { myId } = useAuth()
+  const [ phoneNumber, setPhoneNumber ] = useState('')
   const [ message, setMessage ] = useState('')
   const [ newUsers, setNewUsers ] = useState([])
   const [ isLoading, setIsLoading ] = useState(false)
   const [ isSearched, setIsSearched ] = useState(false)
 
   useEffect(() => {
-    if(!username){
+    if(!phoneNumber) {
       setNewUsers([]);
       setIsSearched(false)
     }
-  },[username])
+  },[phoneNumber])
 
   useEffect(() => {
     isSearched ? 
-      setMessage(`Oops.. No user was found with this email, try to invite your friends to use this app!`) : 
-      setMessage(`Search for new users to start to talk!`)
+      setMessage(`Oops.. No user was found with this phone number, try to invite your friends to use this app!`) : 
+      setMessage(`Search for new users to start to talk!`);
   },[ isSearched ])
 
-  function handleSetUsername(value){ setUsername(value) }
-
   async function handleFetchNewUsers(event){
-    event.preventDefault()
-    setIsLoading(true)
-    const { data } = await api.post("/users/show", { email: username })
-    setNewUsers(data)
-    setIsLoading(false)
-    setIsSearched(true)
+    event.preventDefault();
+    setIsLoading(true);
+    const { data } = await api.post("/users/show", { phoneNumber });
+    
+    if(data[0]._id !== myId)
+      setNewUsers(data);
+
+    setIsLoading(false);
+    setIsSearched(true);
   }
 
   async function handleCreateNewRoom(user_id){
     try{
-      const { data } = await api.post(`/room/new/${user_id}`)
-      handleAddNewRoom(data)
+      const { data } = await api.post(`/room/new/${user_id}`);
+      await handleAddNewRoom(data);
     } catch(error){
       if(error.response.data.error === "Room already exists") {
-        setMessage('You already add this user')
-        setNewUsers([])
-        return
+        setMessage('You already added this user!');
+        setNewUsers([]);
+        return;
       }
-      setMessage(error.response.data.error)
-      setNewUsers([])
+      setMessage(error.response.data.error);
+      setNewUsers([]);
     }
   }
 
@@ -61,15 +64,15 @@ export function NewContact(){
       <h2>Search for new users</h2>
       <form onSubmit={handleFetchNewUsers}>
         <SignInput
-          data={username}
-          setData={handleSetUsername}
-          type="email"
-          title="Write the new user email"
+          data={phoneNumber}
+          setData={(value) => setPhoneNumber(value)}
+          type="number"
+          title="Write the new user phone number"
           bgColor="#FFFFFF"
         />
 
         <SignButton
-          isFilled={!!username}
+          isFilled={phoneNumber}
           isLoading={isLoading}
           showIcon={false}
           title="Search"
@@ -77,25 +80,23 @@ export function NewContact(){
         />
       </form>
      
-
-     <div className={styles.new_users_list}>
-
-        { newUsers.length !== 0 ? newUsers.map(item => (
-          <NewUserItem
-            key={item._id}
-            name={item.name}
-            email={item.email}
-            last_seen={item.lastOnline}
-            isOnline={item.isOnline}
-            onClick={() => handleCreateNewRoom(item._id)}
-          />
-        )) : (
-          <div className={styles.not_user_found}>
-            <FaWhatsapp size="6rem" fill="#d5d5d5"/>
-            <span>{message}</span>
-          </div>
-        )}
-     </div>
+      <div className={styles.new_users_list}>
+          { newUsers.length !== 0 ? newUsers.map(item =>
+            <NewUserItem
+              key={item._id}
+              name={item.name}
+              email={item.email}
+              last_seen={item.lastOnline}
+              isOnline={item.isOnline}
+              onClick={async () => await handleCreateNewRoom(item._id)}
+            />
+          ) : (
+            <div className={styles.not_user_found}>
+              <FaWhatsapp size="6rem" fill="#d5d5d5"/>
+              <span>{message}</span>
+            </div>
+          )}
+      </div>
     </div>
   )
 }

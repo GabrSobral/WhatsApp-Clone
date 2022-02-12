@@ -9,7 +9,6 @@ export function Chat(){
     <div className={styles.container}>
       <ChatHeader/>
       <MessagesContainer/>
-
       <SendMessageInput/>
     </div>
   )
