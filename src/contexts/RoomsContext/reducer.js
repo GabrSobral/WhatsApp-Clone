@@ -91,6 +91,11 @@ export const RoomsReducer = (state, action) => {
       const current_message = action.payload.current_message;
       state.rooms[state.selectedIndex].current_message = current_message;
       return { ...state };
+    },
+    add_referenced_to: () => {
+      const referencedTo = action.payload.referencedTo;
+      state.rooms[state.selectedIndex].referencedTo = referencedTo;
+      return { ...state };
     }
   }
 

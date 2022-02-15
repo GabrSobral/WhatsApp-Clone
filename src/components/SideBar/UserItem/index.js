@@ -4,6 +4,7 @@ import styles from './styles.module.scss'
 import { format } from 'date-fns'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useRooms } from '../../../contexts/RoomsContext'
+import { SendingSVG } from '../../../images/sending'
 
 export function UserItem({ room, index }){
   const { isFocused, handleSelectRoom } = useRooms()
@@ -29,12 +30,17 @@ export function UserItem({ room, index }){
             <span className={styles.writting}>typing...</span> : 
             <span className={`${styles.lastMessage} ${!isFocused && styles.blur}`}>
               {room.messages.length !== 0 && 
-                (lastMessage.user !== myId ? 
-                  (lastMessage?.message) :
-                  (<>
-                  <MdDoneAll size={19} fill={lastMessage?.viewed ? "#30B1E7" : "#A6ADA0"}/>
-                  {lastMessage?.message}
-                  </>))
+                (
+                  lastMessage.user !== myId ? 
+                  lastMessage?.message :
+                  <>
+                    {!lastMessage.received ? 
+                      <SendingSVG/> :
+                      <MdDoneAll size={19} fill={lastMessage?.viewed ? "#30B1E7" : "#A6ADA0"}/>
+                    } 
+                    {lastMessage?.message}
+                  </>
+                )
               }
             </span>
           }

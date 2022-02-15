@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { MdClose } from 'react-icons/md'
 import { uniqueId } from 'lodash'
 
 import EmojiSVG from '../../../images/emoji.svg'
@@ -12,9 +13,9 @@ import { socket } from "../../../services/socket"
 import styles from './styles.module.scss'
 
 export function SendMessageInput(){
-  const [ newMessage, setNewMessage ] = useState([])
+  const [ newMessage, setNewMessage ] = useState("");
   const [ verify, setVerify ] = useState(false);
-  const { selectedRoom, RoomDispatch, rooms, selectedIndex } = useRooms()
+  const { selectedRoom, RoomDispatch } = useRooms();
   const { myId } = useAuth();
 
   async function sendMessage(event){
@@ -26,11 +27,7 @@ export function SendMessageInput(){
       public_id: `${new Date().getTime()}${myId}`,
       message: newMessage.trim(),
       assignedTo: selectedRoom._id,
-      referencedTo: {
-        _id: "62066a0cbba23556ebb751c4",
-        message: "aaa",
-        user: "6204ebe39b44271c9e150630",
-      },
+      referencedTo: selectedRoom.referencedTo,
       received: false,
       timestamp: new Date(),
       user: myId,
@@ -42,14 +39,6 @@ export function SendMessageInput(){
 
     socket.emit('sendMessage', { message });
   }
-  const typeAMessage = (message) => {
-    setNewMessage(prev => prev[selectedIndex].message = message);
-  }
-
-  useEffect(() => {
-    setNewMessage(rooms.map(() => [{ message: "", referencedTo: null }]));
-    console.log(rooms.map(() => [{ message: "", referencedTo: null }]));
-  },[rooms])
   
   useEffect(() => {
     setVerify(prev => {
@@ -74,6 +63,18 @@ export function SendMessageInput(){
   
   return(
     <div className={styles.write_message}>
+      { selectedRoom.referencedTo && 
+        <div className={styles.referencedTo_container}>
+          <div className={styles.message_container}>
+            <span className={styles.my_name}>{selectedRoom.referencedTo.user}</span>
+            <span>{selectedRoom.referencedTo.message}</span>
+          </div>
+          <button type="button">
+            <MdClose size={32} color="#404041"/>
+          </button>
+        </div>
+      }
+
       <form onSubmit={sendMessage}>
         <button type="button">
           <img src={EmojiSVG} alt="Emoji"/>
@@ -83,14 +84,14 @@ export function SendMessageInput(){
         </button>
 
         <input 
-          value={newMessage[selectedIndex].message} 
+          value={newMessage} 
           type='text' 
           placeholder='Type a message' 
-          onChange={(event)=> typeAMessage(event.target.value)}
+          onChange={(event)=> setNewMessage(event.target.value)}
         />
           
         <button type="button">
-          <img src={AudioSVG} alt="Anexos"/>
+          <img src={AudioSVG} alt="Record an audio to send"/>
         </button>
       </form>
     </div>

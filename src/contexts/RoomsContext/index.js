@@ -168,6 +168,19 @@ export function RoomsProvider({ children }) {
 		return () => socket.removeAllListeners()
 	},[RoomDispatch, RoomState.selectedIndex, RoomState.rooms, myId]);
 
+	const selectMessageToAnswer = useCallback((message) => {
+		RoomDispatch({
+			type: "add_referenced_to", 
+			payload: { 
+				referencedTo: { 
+					_id: message._id, 
+					message: message.message, 
+					user: message.user 
+				} 
+			}
+		})
+	},[])
+
 	return(
 		<RoomsContext.Provider 
 			value={{
@@ -179,7 +192,8 @@ export function RoomsProvider({ children }) {
 				handleSelectRoom,
 				handleFetchRooms,
 				handleAddNewRoom,
-				handleRemoveRoomFromScreen
+				handleRemoveRoomFromScreen,
+				selectMessageToAnswer
 			}}
 		>
 			{children} 

@@ -4,11 +4,58 @@
   justify-content: center;
   background-color: var(--gray-100);
   width: 100%;
-  height: 80px;
+  height: fit-content;
+  flex-direction: column;
+
+  .referencedTo_container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.3rem 4rem 0 4rem;
+    
+    .message_container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      width: calc(100% + 0.8rem);
+      transform: translateX(-0.4rem);
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.068);
+      padding: 0.5rem;
+      border-left: 3px solid rgb(196, 32, 196);
+      border-radius: 7px;
+      overflow: hidden;
+
+      span {
+        color: var(--gray-800);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 0.9rem;
+  
+        &.my_name{
+          color: rgb(196, 32, 196);
+          font-weight: 500;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 1rem;
+      border: none
+    }
+  }
 
   form{
     width: 100%;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem;
     gap: 1rem;
     display: flex;
     align-items: center;
@@ -18,11 +65,11 @@
       margin: auto;
       width:100%;
       height: 45px;
-      border-radius: 25px;
+      border-radius: 8px;
       font-size: 15px;
       border: none;
       outline: none;
-      padding: 10px 0px 10px 45px;
+      padding: 0.3rem 1rem;
       color: rgb(102, 102, 102);
     }
 
