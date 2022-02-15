@@ -10,10 +10,40 @@
   padding: 5px 10px;
 
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.3rem;
+  flex-direction: column;
   animation: slidein 0.3s;
+
+  .referencedTo_container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    width: calc(100% + 0.8rem);
+    transform: translateX(-0.4rem);
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.068);
+    padding: 0.5rem;
+    border-left: 3px solid rgb(196, 32, 196);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+
+    span {
+      color: var(--gray-800);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &.my_name{
+        color: rgb(196, 32, 196);
+        font-weight: 500;
+      }
+    }
+  }
+  .message_content_container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
 
   .arrow_right{
     position: absolute;

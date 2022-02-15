@@ -137,8 +137,8 @@ export function RoomsProvider({ children }) {
 
 	const handleSelectRoom = useCallback(async index => {
 		if(index === RoomState.selectedIndex || (typeof index !== "number")) return;
-		
 		RoomDispatch({ type: "select_room", payload: { index }});
+	
 		const room = RoomState.rooms[index];
 
 		if(room?.unreadMessages !== 0) {
@@ -174,6 +174,7 @@ export function RoomsProvider({ children }) {
 				rooms: RoomState.rooms,
 				selectedRoom: RoomState.rooms[RoomState.selectedIndex],
 				isFocused: RoomState.isFocused,
+				selectedIndex: RoomState.selectedIndex,
 				RoomDispatch,
 				handleSelectRoom,
 				handleFetchRooms,

@@ -1,77 +1,76 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { uniqueId } from 'lodash'
 
 import EmojiSVG from '../../../images/emoji.svg'
 import FileSVG from '../../../images/file.svg'
 import AudioSVG from '../../../images/audio.svg'
 
-import { useUsers } from '../../../contexts/UsersContext'
-import api from "../../../services/api"
+import { useRooms } from '../../../contexts/RoomsContext'
+import { useAuth } from '../../../contexts/AuthContext'
 import { socket } from "../../../services/socket"
+
 import styles from './styles.module.scss'
-import { useEffect } from 'react'
-import { parseJwt } from '../../../utils/parseJWT'
-import { getToken } from '../../../utils/handleToken'
 
 export function SendMessageInput(){
-  const { 
-    selectedRoom, 
-    handleAddMessageToRoom, 
-    handleUpdateMessagesSent 
-  } = useUsers()
-  const [ newMessage, setNewMessage] = useState('')
-  const [ verify, setVerify ] = useState(false)
+  const [ newMessage, setNewMessage ] = useState([])
+  const [ verify, setVerify ] = useState(false);
+  const { selectedRoom, RoomDispatch, rooms, selectedIndex } = useRooms()
+  const { myId } = useAuth();
 
   async function sendMessage(event){
     event.preventDefault()
-    if(newMessage === ''){
-      return
-    }
+    if(newMessage.trim() === '') return;
 
     const message = {
-      message: newMessage,
-      assignedTo: selectedRoom._id,
-    }
-    const messageWithAllData = {
       _id: uniqueId(),
-      message: newMessage,
+      public_id: `${new Date().getTime()}${myId}`,
+      message: newMessage.trim(),
       assignedTo: selectedRoom._id,
+      referencedTo: {
+        _id: "62066a0cbba23556ebb751c4",
+        message: "aaa",
+        user: "6204ebe39b44271c9e150630",
+      },
       received: false,
       timestamp: new Date(),
-      user: parseJwt(getToken()).id,
+      user: myId,
       viewed: false
-    }
+    };
 
-    handleAddMessageToRoom(messageWithAllData)
-    setNewMessage('')
-    api.post('messages/new', message).then(({ data }) => {
-      socket.emit('sendMessage', 
-        { messageData: data, room: selectedRoom.user[0]._id}
-      )
-      messageWithAllData._id = data._id
-      messageWithAllData.received = true
-      handleUpdateMessagesSent(messageWithAllData)
-    })
+    setNewMessage('');
+		RoomDispatch({ type: "add_message_to_room", payload: { message }});
+
+    socket.emit('sendMessage', { message });
   }
+  const typeAMessage = (message) => {
+    setNewMessage(prev => prev[selectedIndex].message = message);
+  }
+
+  useEffect(() => {
+    setNewMessage(rooms.map(() => [{ message: "", referencedTo: null }]));
+    console.log(rooms.map(() => [{ message: "", referencedTo: null }]));
+  },[rooms])
   
   useEffect(() => {
-    if(newMessage !== '' && !verify) {
-      setVerify(true)
-      socket.emit('writting', { 
-        to: selectedRoom.user[0]._id,
-        writting: true,
-        room: selectedRoom._id
-      })
-    } else if(newMessage === '' && verify){
-      setVerify(false)
-      socket.emit('writting', { 
-        to: selectedRoom.user[0]._id, 
-        writting: false ,
-        room: selectedRoom._id
-      })
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setVerify(prev => {
+      if(newMessage !== "" && !prev) 
+        return true;
+      else if(newMessage === "" && prev)
+        return false;
+
+      return prev;
+    });
   },[newMessage])
+
+  useEffect(() => {
+    socket.emit('writting', { 
+      to: selectedRoom.user[0]._id, 
+      writting: verify,
+      room: selectedRoom._id
+    });
+
+    return () => socket.removeAllListeners();
+  },[verify, selectedRoom])
   
   return(
     <div className={styles.write_message}>
@@ -84,12 +83,11 @@ export function SendMessageInput(){
         </button>
 
         <input 
-          value={newMessage} 
+          value={newMessage[selectedIndex].message} 
           type='text' 
           placeholder='Type a message' 
-          onChange={
-            (event)=> { setNewMessage(event.target.value) }
-          }/>
+          onChange={(event)=> typeAMessage(event.target.value)}
+        />
           
         <button type="button">
           <img src={AudioSVG} alt="Anexos"/>

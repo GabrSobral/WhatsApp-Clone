@@ -5,7 +5,7 @@ export const RoomsReducer = (state, action) => {
     set_rooms: () => ({ ...state, rooms: action.payload.rooms }),
     add_room: () => ({ ...state, rooms: [ ...state.rooms, action.payload.room ] }),
     select_room: () => ({ ...state, selectedIndex: action.payload.index }),
-    receive_join_new_room:() => ({ ...state, rooms: [action.payload.room, ...state.rooms]}),
+    receive_join_new_room:() => ({ ...state, rooms:[action.payload.room, ...state.rooms]}),
     handle_is_focused: () => ({ ...state, isFocused: !state.isFocused }),
     read_unread_messages: () => {
       const i = state.rooms.findIndex(item => item._id === action.payload.room);
@@ -85,6 +85,11 @@ export const RoomsReducer = (state, action) => {
           });
       }
       state.rooms[i].messages.push(messageData);
+      return { ...state };
+    },
+    set_current_message: () => {
+      const current_message = action.payload.current_message;
+      state.rooms[state.selectedIndex].current_message = current_message;
       return { ...state };
     }
   }
