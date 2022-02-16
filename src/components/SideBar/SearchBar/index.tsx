@@ -1,11 +1,17 @@
-import { MdSearch } from 'react-icons/md'
+// import { MdSearch } from 'react-icons/md'
 import styles from './styles.module.scss'
 
-export function SearchBar({ value, setSearch, placeholder }){
+type Props = {
+  value: string;
+  setSearch: (value: string) => void;
+  placeholder: string
+}
+
+export function SearchBar({ value, setSearch, placeholder }: Props){
   return(
     <div className={styles.search_bar}>
       <div>
-        <MdSearch size={20} color='#919191'/>
+        {/* <MdSearch size={20} color='#919191'/> */}
         <input
           value={value}
           type='text' 

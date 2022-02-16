@@ -1,11 +1,11 @@
 import { SideBarStatus } from '../../components/SideBarStatus'
 import styles from './styles.module.scss'
-import { MdClose } from 'react-icons/md'
+// import { MdClose } from 'react-icons/md'
 import { useStatus } from '../../contexts/StatusContext'
 import { SelectedStatus } from '../../components/SelectedStatus'
 
 export function Status(){
-  const { handleStatusOpen, selectedStatus } = useStatus()
+  const { actions, selectedStatus } = useStatus()
 
   return(
     <div className={styles.container_absolute}>
@@ -21,9 +21,10 @@ export function Status(){
           <button 
             type="button" 
             className={styles.close_status}
-            onClick={handleStatusOpen}
+            onClick={() => {}}
           >
-            <MdClose size={26} fill="#ffffff"/>
+            X
+            {/* <MdClose size={26} fill="#ffffff"/> */}
           </button>
 
 

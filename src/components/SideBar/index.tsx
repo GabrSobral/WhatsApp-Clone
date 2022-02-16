@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { FiPlus } from 'react-icons/fi'
+import React, { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Slide } from '../Slide'
 
 import { Header } from './Header'
@@ -10,13 +9,13 @@ import styles from './styles.module.scss'
 
 export function SideBar(){
   const [ showNewContact, setShowNewContact ] = useState(false)
-  const sideBarRef = useRef(null)
+  const sideBarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.addEventListener('click', (event) => {
       if(!event.target || !sideBarRef.current) return;
       
-      const isClickInside = sideBarRef.current.contains(event.target)
+      const isClickInside = sideBarRef.current.contains(event.target as Node)
       if(!isClickInside)
         setShowNewContact(false)
     });
@@ -36,7 +35,8 @@ export function SideBar(){
         className={styles.add_contact}
         title="Add new contact"
       >
-        <FiPlus size={32} stroke="#ffffff" />
+        <span>+</span>
+        {/* <FiPlus size={32} stroke="#ffffff" /> */}
       </button>
 		</div>
   )

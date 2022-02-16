@@ -1,12 +1,18 @@
-import { MdDoneAll, MdPerson } from 'react-icons/md'
-import { FaAngleDown } from 'react-icons/fa'
+// import { MdDoneAll, MdPerson } from 'react-icons/md'
+// import { FaAngleDown } from 'react-icons/fa'
 import styles from './styles.module.scss'
 import { format } from 'date-fns'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useRooms } from '../../../contexts/RoomsContext'
 import { SendingSVG } from '../../../images/sending'
+import { IRoom } from '../../../types/IRoom'
 
-export function UserItem({ room, index }){
+type Props = {
+  room: IRoom;
+  index: number;
+}
+
+export function UserItem({ room, index }: Props){
   const { isFocused, handleSelectRoom } = useRooms()
   const { myId } = useAuth()
   const lastMessage = room.messages[room.messages.length - 1]
@@ -16,7 +22,7 @@ export function UserItem({ room, index }){
   return(
     <div className={styles.user_container} onClick={() => handleSelectRoom(index)}>
       <div className={`${styles.user_img} ${room.user[0].isOnline && styles.online}`}>  
-        <MdPerson size={30} fill={room.user[0].isOnline ? '#51b786' : '#919191'}/> 
+        {/* <MdPerson size={30} fill={room.user[0].isOnline ? '#51b786' : '#919191'}/>  */}
       </div>
 
       <div className={styles.container_char}>
@@ -36,7 +42,8 @@ export function UserItem({ room, index }){
                   <>
                     {!lastMessage.received ? 
                       <SendingSVG/> :
-                      <MdDoneAll size={19} fill={lastMessage?.viewed ? "#30B1E7" : "#A6ADA0"}/>
+                      <span>sim</span>
+                      // <MdDoneAll size={19} fill={lastMessage?.viewed ? "#30B1E7" : "#A6ADA0"}/>
                     } 
                     {lastMessage?.message}
                   </>
@@ -48,7 +55,7 @@ export function UserItem({ room, index }){
           {room.unreadMessages !== 0 && <div>{room?.unreadMessages}</div>}
 
           <button type="button" className={styles.details}>
-            <FaAngleDown size={20} fill="#919191"/>
+            {/* <FaAngleDown size={20} fill="#919191"/> */}
           </button>
         </div>
       </div>

@@ -1,26 +1,22 @@
 import { useEffect } from 'react'
-import { Chat } from '../../components/Chat/index.js'
+import { Chat } from '../../components/Chat/index'
 import { SideBar } from '../../components/SideBar'
-import { useRooms } from '../../contexts/RoomsContext/index.js'
-import { useStatus } from '../../contexts/StatusContext.js'
-import { Status } from '../Status/index.js'
+import { useRooms } from '../../contexts/RoomsContext/index.jsx'
+import { useStatus } from '../../contexts/StatusContext.jsx'
+import { Status } from '../Status/index'
 
 import styles from './styles.module.scss'
 import '../../services/socket.js'
 
 export function Main(){
   const { selectedRoom, handleFetchRooms } = useRooms()
-  const { isStatusOpen } = useStatus()
+  // const { isStatusOpen } = useStatus()
 
-  useEffect(() => {
-    (async function(){
-      await handleFetchRooms()
-    })()
-  },[handleFetchRooms])
+  useEffect(() => handleFetchRooms() ,[handleFetchRooms])
 
   return(
     <div className={styles.main}>
-      {isStatusOpen && <Status/>}
+      {/* {isStatusOpen && <Status/>} */}
       <aside>
         <SideBar/>
       </aside>

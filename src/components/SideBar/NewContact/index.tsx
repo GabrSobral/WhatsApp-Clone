@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { FaWhatsapp } from 'react-icons/fa'
+import { FormEvent, useEffect, useState } from 'react'
+// import { FaWhatsapp } from 'react-icons/fa'
 
 import api from '../../../services/api.js'
 import { SignInput } from '../../SignInput'
@@ -8,14 +8,15 @@ import { SignButton } from '../../SignButton'
 import { NewUserItem } from './NewUserItem'
 import styles from './styles.module.scss'
 import { useRooms } from '../../../contexts/RoomsContext'
-import { useAuth } from '../../../contexts/AuthContext.js'
+import { useAuth } from '../../../contexts/AuthContext.jsx'
+import { IUser } from '../../../types/IUser.js'
 
 export function NewContact(){
   const { handleAddNewRoom } = useRooms()
   const { myId } = useAuth()
   const [ phoneNumber, setPhoneNumber ] = useState('')
   const [ message, setMessage ] = useState('')
-  const [ newUsers, setNewUsers ] = useState([])
+  const [ newUsers, setNewUsers ] = useState<IUser[]>([])
   const [ isLoading, setIsLoading ] = useState(false)
   const [ isSearched, setIsSearched ] = useState(false)
 
@@ -32,10 +33,10 @@ export function NewContact(){
       setMessage(`Search for new users to start to talk!`);
   },[ isSearched ])
 
-  async function handleFetchNewUsers(event){
+  async function handleFetchNewUsers(event: FormEvent){
     event.preventDefault();
     setIsLoading(true);
-    const { data } = await api.post("/users/show", { phoneNumber });
+    const { data } = await api.post<IUser[]>("/users/show", { phoneNumber });
     
     if(data[0]._id !== myId)
       setNewUsers(data);
@@ -44,11 +45,11 @@ export function NewContact(){
     setIsSearched(true);
   }
 
-  async function handleCreateNewRoom(user_id){
+  async function handleCreateNewRoom(user_id: string){
     try{
       const { data } = await api.post(`/room/new/${user_id}`);
-      await handleAddNewRoom(data);
-    } catch(error){
+      handleAddNewRoom(data);
+    } catch(error: any){
       if(error.response.data.error === "Room already exists") {
         setMessage('You already added this user!');
         setNewUsers([]);
@@ -65,14 +66,14 @@ export function NewContact(){
       <form onSubmit={handleFetchNewUsers}>
         <SignInput
           data={phoneNumber}
-          setData={(value) => setPhoneNumber(value)}
+          setData={(value: string) => setPhoneNumber(value)}
           type="number"
           title="Write the new user phone number"
           bgColor="#FFFFFF"
         />
 
         <SignButton
-          isFilled={phoneNumber}
+          isFilled={!!phoneNumber}
           isLoading={isLoading}
           showIcon={false}
           title="Search"
@@ -85,14 +86,14 @@ export function NewContact(){
             <NewUserItem
               key={item._id}
               name={item.name}
-              email={item.email}
+              phoneNumber={item.phoneNumber}
               last_seen={item.lastOnline}
               isOnline={item.isOnline}
               onClick={async () => await handleCreateNewRoom(item._id)}
             />
           ) : (
             <div className={styles.not_user_found}>
-              <FaWhatsapp size="6rem" fill="#d5d5d5"/>
+              {/* <FaWhatsapp size="6rem" fill="#d5d5d5"/> */}
               <span>{message}</span>
             </div>
           )}

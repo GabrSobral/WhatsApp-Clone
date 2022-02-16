@@ -1,29 +1,29 @@
-import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { SignButton } from '../../components/SignButton/index.js';
-import { SignInput } from '../../components/SignInput/index.js';
-import { useAuth } from '../../contexts/AuthContext.js'
+import React, { FormEvent, useState } from 'react'
+import { Link, useRoutes } from 'react-router-dom'
+import { SignButton } from '../../components/SignButton/index';
+import { SignInput } from '../../components/SignInput/index';
+import { useAuth } from '../../contexts/AuthContext'
 
 import styles from './styles.module.scss'
 
-export default function SignInPage() {
+export const SignIn = () => {
   const [ phoneNumber, setPhoneNumber ] = useState('') 
   const [ warning, setWarning ] = useState('') 
 	const [ isLoading, setIsLoading ] = useState(false)
 
-	const { SignIn } = useAuth()
-  const history = useHistory()
+	const { signInOrSignUp } = useAuth();
+  // const history = useRoutes()
 
-  async function signIn(event){
+  async function signIn(event: FormEvent){
 		event.preventDefault()
 		setIsLoading(true)
 		phoneNumber.trim()
 		try{
-			await SignIn(phoneNumber)
+			await signInOrSignUp(phoneNumber);
 			setIsLoading(false)
-			history.push('/')
+			// history.push('/')
 			return
-		} catch(error){
+		} catch(error: any){
 			console.log(error.response.data)
 			setWarning(error.response.data.error)
 			setIsLoading(false)
@@ -38,18 +38,18 @@ export default function SignInPage() {
         <form onSubmit={signIn}>
           <SignInput
 						data={phoneNumber}
-						setData={(value) => setPhoneNumber(value)}
+						setData={(value: any) => setPhoneNumber(value)}
 						type="phoneNumber"
 						title="Phone number:"
 					/>
 
-          <div className={styles.remember_and_forgotPassword}>
+          <nav className={styles.remember_and_forgotPassword}>
 						<div>
 							<input type='checkbox' id={styles.remember}/>
 							<label htmlFor={styles.remember}>Remember me</label>
 						</div>
 						<Link to=''>Forgot Password</Link>
-          </div>
+          </nav>
 
           {warning && <span className={styles.message}>{warning}</span>}
 					

@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React, { FormEvent, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { SignInput } from '../../components/SignInput';
 import { SignButton } from '../../components/SignButton';
 
-import { useAuth } from '../../contexts/AuthContext.js';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from '../SignIn/styles.module.scss'
 
-export default function SignUpPage() {
+export function SignUp() {
   const [ name, setName ] = useState('')
   const [ phoneNumber, setPhoneNumber ] = useState('') 
   const [ warning, setWarning ] = useState('') 
   const [ isLoading, setIsLoading ] = useState(false) 
 
-  const { SignUp } = useAuth()
-  const history = useHistory()
+  const { signInOrSignUp } = useAuth()
+  // const history = useHistory()
 
-  async function signUp(event){
+  async function signUp(event: FormEvent){
     event.preventDefault()
 
     setIsLoading(true);
@@ -24,10 +24,10 @@ export default function SignUpPage() {
     phoneNumber.trim();
 
     try {
-      await SignUp(name, phoneNumber)
+      await signInOrSignUp(name, phoneNumber)
       setIsLoading(false)
-      history.push('/')
-    } catch(error) {
+      // history.push('/')
+    } catch(error: any) {
       console.log(error)
       setWarning(error.response.data.error)
       setIsLoading(false)
@@ -42,14 +42,14 @@ export default function SignUpPage() {
         <form onSubmit={signUp}> 
           <SignInput
             data={name}
-            setData={(value) => setName(value)}
+            setData={(value: string) => setName(value)}
             type="text"
             title="Name:"
           />
 
           <SignInput
             data={phoneNumber}
-            setData={(value) => setPhoneNumber(value)}
+            setData={(value: string) => setPhoneNumber(value)}
             type="number"
             title="Phone number:"
           />
@@ -57,7 +57,7 @@ export default function SignUpPage() {
           <span className={styles.message}>{warning}</span>
 
           <SignButton
-            isFilled={(name && phoneNumber)}
+            isFilled={!!(name && phoneNumber)}
             isLoading={isLoading}
             title="Sign up"
             disabled={!(name && phoneNumber)}
