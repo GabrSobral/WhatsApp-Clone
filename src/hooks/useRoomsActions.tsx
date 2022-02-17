@@ -83,8 +83,6 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
 				const messageIndex = prev.rooms[i].messages.findIndex(item => item.public_id === message.public_id);
-
-				console.log(messageIndex);
 		
 				prev.rooms[i].messages[messageIndex].received = true;
 				prev.rooms[i].messages[messageIndex]._id = message._id;

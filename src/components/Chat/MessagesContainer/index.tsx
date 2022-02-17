@@ -23,11 +23,14 @@ export const MessagesContainer = () => {
   }
 
   useEffect(() => {
-    const containerRef = container.current;
-    if(!containerRef) return;
+    selectedRoom?.hasMessages && scrollToDown()
+  },[selectedRoom?._id, selectedRoom?.hasMessages])
+
+  useEffect(() => {
+    if(!container.current) return;
+    const { offsetHeight, scrollTop, scrollHeight } = container.current;
     
-    if(containerRef.offsetHeight + containerRef.scrollTop >= 
-       containerRef.scrollHeight - 100)
+    if(offsetHeight + scrollTop >= scrollHeight - 100)
       scrollToDown();
   }, [ selectedRoom?.messages.length ])
 
@@ -35,22 +38,20 @@ export const MessagesContainer = () => {
     const containerRef = container.current;
     
     if(!containerRef || !selectedRoom?.messages) 
-    return;
+      return;
     
     const onScroll = () => {
       const { offsetHeight, scrollTop, scrollHeight } = containerRef;
 
-      if(offsetHeight + scrollTop <= scrollHeight - 100) 
+      if(offsetHeight + scrollTop <= scrollHeight - 50) 
         setIsVisible(true);
       else
         setIsVisible(false);
 
-      if(selectedRoom?.hasAllMessages) return;
+      if(selectedRoom?.hasAllMessages || scrollTop !== 0) return;
         
       if(selectedRoom?.messages.length  <= 49 && selectedRoom.hasMessages) 
         return roomActions.setHasAllMessages(selectedRoom._id);
-        
-      if(scrollTop !== 0) return;
 
       setIsLoading(true);
       const last_message = selectedRoom?.messages[0]._id;
