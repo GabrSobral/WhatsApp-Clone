@@ -36,8 +36,8 @@ export function SendMessageInput(){
     };
 
     setNewMessage('');
-    roomActions.addMessageToRoom(message)
-
+    roomActions.addMessageToRoom(message);
+    selectedRoom?._id && roomActions.removeReferencedTo(selectedRoom?._id);
     socket.emit('sendMessage', { message });
   }
   
@@ -58,8 +58,6 @@ export function SendMessageInput(){
       writting: verify,
       room: selectedRoom?._id
     });
-
-    // return () => socket.removeAllListeners();
   },[verify, selectedRoom])
   
   return(
@@ -70,7 +68,10 @@ export function SendMessageInput(){
             <span className={styles.my_name}>{selectedRoom?.referencedTo.user}</span>
             <span>{selectedRoom?.referencedTo.message}</span>
           </div>
-          <button type="button">
+          <button 
+            type="button" 
+            onClick={() => roomActions.removeReferencedTo(selectedRoom?._id)}
+          >
             {/* <MdClose size={32} color="#404041"/> */}
             X
           </button>

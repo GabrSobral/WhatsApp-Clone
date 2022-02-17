@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import styles from './styles.module.scss'
 
-export function Slide({ show, children }){
+type ISlideProps = {
+  show: boolean;
+  children: ReactNode
+}
+
+export function Slide({ show, children }: ISlideProps){
   const [ shouldRender, setRender ] = useState(show);
 
   useEffect(() => {

@@ -2,18 +2,20 @@ import { format } from 'date-fns'
 import { useAuth } from '../../../../contexts/AuthContext';
 import { useRooms } from '../../../../contexts/RoomsContext';
 import ArrowLeft from '../../../../images/message_arrow_left.svg'
+import { IMessage } from '../../../../types/IMessage';
+
 import styles from './styles.module.scss'
 
-export function UserTwo({ message }){
+export function UserTwo({ message }: { message: IMessage }){
   const formattedMessageDate = format(new Date(message.timestamp), "HH:mm");
-  const { selectMessageToAnswer } = useRooms();
+  const { roomActions } = useRooms();
   const { myId } = useAuth();
 
   return(
     <div 
       className={styles.user_two} 
       key={message._id} 
-      onClick={() => selectMessageToAnswer(message)}
+      onClick={() => roomActions.selectMessageToAnswer(message)}
     >
       <span className={styles.arrow_left}>
         <img src={ArrowLeft} alt="arrow of popup" />

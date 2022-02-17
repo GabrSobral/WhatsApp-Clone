@@ -42,7 +42,7 @@ export function UserItem({ room, index }: Props){
                   <>
                     {!lastMessage.received ? 
                       <SendingSVG/> :
-                      <span>sim</span>
+                      <div/>
                       // <MdDoneAll size={19} fill={lastMessage?.viewed ? "#30B1E7" : "#A6ADA0"}/>
                     } 
                     {lastMessage?.message}

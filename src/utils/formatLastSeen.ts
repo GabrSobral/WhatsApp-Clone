@@ -1,6 +1,6 @@
 import { format, eachDayOfInterval } from "date-fns";
 
-export function formatLastSeen(date){
+export function formatLastSeen(date: Date){
   let formattedDate = ''
   const today = new Date()
 

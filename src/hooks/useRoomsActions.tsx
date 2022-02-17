@@ -40,21 +40,21 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === roomId);
 				prev.rooms[i].unreadMessages = 0;
-				return prev;
+				return { ...prev };
 			});
 		},
 		receiveWritting: (roomId: string, isWritting: boolean) => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === roomId);
 				prev.rooms[i].isWritting = isWritting;
-				return prev;
+				return { ...prev };
 			})
 		},
 		receiveReadMessages: (roomId: string) => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === roomId);
 				prev.rooms[i].messages.forEach(message => message.viewed = true);
-				return prev;
+				return { ...prev };
 			})
 		},
 		receiveImOnline: (roomId: string, isOnline: boolean) => {
@@ -62,63 +62,63 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 				const i = prev.rooms.findIndex(item => item._id === roomId);
 				prev.rooms[i].user[0].isOnline = isOnline;
 				prev.rooms[i].user[0].lastOnline = new Date();
-				return prev;
+				return { ...prev };
 			})
 		},
 		addPrevMessages: (prevMessages: IMessage[]) => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === prevMessages[0].assignedTo);
-				prev.rooms[i].messages = prevMessages.concat(state.rooms[i].messages);
-				return prev;
-			})
+				prev.rooms[i].messages = prevMessages.concat(prev.rooms[i].messages);
+				return { ...prev };
+			});
 		},
 		addMessageToRoom: (message: IMessage) => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
 				prev.rooms[i].messages.push(message);
-				return prev;
+				return { ...prev };
 			});
 		},
 		updateMessageSent: (message: IMessage) => {
 			setState(prev => {
 				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
 				const messageIndex = prev.rooms[i].messages.findIndex(item => item.public_id === message.public_id);
+
+				console.log(messageIndex);
 		
 				prev.rooms[i].messages[messageIndex].received = true;
 				prev.rooms[i].messages[messageIndex]._id = message._id;
-				return prev;
+				return { ...prev };
 			});
 		},
-		setHasMessages: (messages: IMessage[], room: IRoom) => {	
+		setHasMessages: (messages: IMessage[], room: IRoom) => {
+			if(messages.length > 1) { 
+				messages.splice((messages.length - room.messages.length), room.messages.length);
+				room.messages = messages.concat(room.messages);
+			}
+			room.hasMessages = true;
 			setState(prev => {
-				if(messages.length > 1) { 
-					messages.splice((messages.length - room.messages.length), room.messages.length);
-					room.messages = messages.concat(room.messages);
-				}
-				room.hasMessages = true;
-		
-				const i = state.rooms.findIndex(item => item._id === room._id);
-				state.rooms[i] = room;
-		
-				return prev;
-			})
+				const i = prev.rooms.findIndex(item => item._id === room._id);
+				prev.rooms[i] = room;
+				return { ...prev };
+			});
 		},
 		newMessage: (message: IMessage, unreadMessages: IUnreadMessage, userId: string) => {
 			setState(prev => {
 				const selectedRoom = prev.selectedIndex ? prev.rooms[prev.selectedIndex]: null;
-				const i = state.rooms.findIndex(item => item._id === message.assignedTo);
+				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
 		
-				if(unreadMessages.to === state.rooms[i]._id) {
-					if(!state.isFocused || selectedRoom?._id !== message.assignedTo)
-						unreadMessages.user !== userId && state.rooms[i].unreadMessages++;
+				if(unreadMessages.to === prev.rooms[i]._id) {
+					if(!prev.isFocused || selectedRoom?._id !== message.assignedTo)
+						unreadMessages.user !== userId && prev.rooms[i].unreadMessages++;
 					else 
 						socket.emit('viewUnreadMessages', { 
 							user: userId, 
-							room: state.rooms[i]._id 
+							room: prev.rooms[i]._id 
 						});
 				}
-				state.rooms[i].messages.push(message);
-				return prev;
+				prev.rooms[i].messages.push(message);
+				return { ...prev };
 			})
 		},
 		setCurrentMessage: (currentMessage: string) => {	
@@ -126,7 +126,7 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 				if(prev.selectedIndex)
 					prev.rooms[prev.selectedIndex].currentMessage = currentMessage;
 	
-				return prev;
+				return { ...prev };
 			})
 		},
 		addReferencedTo: (referencedTo: IReferencedTo) => {
@@ -134,16 +134,36 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 				if(!prev.selectedIndex) return { ...prev };
 	
 				prev.rooms[prev.selectedIndex].referencedTo = referencedTo;
-				return prev;
+				return { ...prev };
 			})
 		},
-		removeRoom: (roomId: string) => ({ ...state }),
+		removeRoom: (roomId: string) => {
+			setState(prev => {
+				const i = prev.rooms.findIndex(item => item._id === roomId);
+				prev.rooms.splice(i, 1);
+				return { ...prev };
+			});
+		},
 		selectMessageToAnswer: (message: IMessage) => {
 			setState(prev => {
-				if(prev.selectedIndex)
-					prev.rooms[prev.selectedIndex].referencedTo = message;
-				return prev;
+				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
+				prev.rooms[i].referencedTo = message;
+				return { ...prev };
 			})
+		},
+		removeReferencedTo: (roomId: string) => {
+			setState(prev => {
+				const i = prev.rooms.findIndex(item => item._id === roomId);
+				prev.rooms[i].referencedTo = undefined;
+				return { ...prev };
+			})
+		},
+		setHasAllMessages: (roomId: string) => {
+			setState(prev => {
+				const i = prev.rooms.findIndex(item => item._id === roomId);
+				prev.rooms[i].hasAllMessages = true;
+				return { ...prev };
+			});
 		}
 	}),[])
 

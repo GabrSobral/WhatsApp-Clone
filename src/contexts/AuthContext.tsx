@@ -1,14 +1,20 @@
 import { useState, useContext, createContext, useEffect, ReactNode } from "react";
+import { AxiosRequestConfig, AxiosError } from "axios";
 
-import { getToken, login } from "../utils/handleToken";
+import { getToken, setToken } from "../utils/handleToken";
 import { parseJwt } from "../utils/parseJWT.js";
 
 import api from "../services/api";
-import { AxiosRequestConfig } from "axios";
+import { IUser } from "../types/IUser";
 
 type AuthContextProps = {
-  signInOrSignUp: (phoneNumber: string, name?: string) => Promise<any>;
+  signInOrSignUp: (phoneNumber: string, name?: string) => Promise<IAuthResponse>;
   myId: string;
+}
+
+type IAuthResponse = {
+  user: IUser;
+  token: string;
 }
 
 const AuthContext = createContext({} as AuthContextProps);
@@ -22,28 +28,27 @@ export const AuthProvider = ({ children }:{ children: ReactNode}) => {
       setMyId(parseJwt(myToken).id);
   },[]);
 
-  async function signInOrSignUp(phoneNumber: string, name?: string){
-    const url = name ? '/users/register' : '/users/authenticate';
-    const { data } = await api.post(url, { phoneNumber, name });
-    
-    login(data.token);
-    setMyId(parseJwt(data.token).id);
-
-    api.interceptors.request.use((config: AxiosRequestConfig) => {
-      if(config.headers)
-        config.headers.Authorization = `Bearer ${data.token}`;
-      return config;
-    })
-    return data;
+  const signInOrSignUp = (phoneNumber: string, name?: string): Promise<IAuthResponse> => {
+    const url = typeof name === "string" ? '/users/register' : '/users/authenticate';
+    return new Promise((resolve, reject) => {
+      api.post<IAuthResponse>(url, { phoneNumber, name })
+      .then(({ data }) => {
+        setToken(data.token);
+        setMyId(parseJwt(data.token).id);
+        
+        api.interceptors.request.use((config: AxiosRequestConfig) => {
+          if(config.headers)
+          config.headers.Authorization = `Bearer ${data.token}`;
+          return config;
+        });
+        resolve(data);
+      })
+      .catch((error: AxiosError) => reject(error.response?.data.error))
+    });
   }
 
   return(
-    <AuthContext.Provider
-      value={{
-        signInOrSignUp,
-        myId
-      }}
-    >
+    <AuthContext.Provider value={{ signInOrSignUp, myId }} >
       {children}
     </AuthContext.Provider>
   )

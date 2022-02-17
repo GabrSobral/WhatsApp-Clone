@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useStatus } from "../../../contexts/StatusContext";
 import api from "../../../services/api";
 import { socket } from "../../../services/socket";
-import { getToken, logout } from "../../../utils/handleToken";
+import { getToken, removeToken } from "../../../utils/handleToken";
 import { parseJwt } from "../../../utils/parseJWT";
 
 import styles from './styles.module.scss'
@@ -19,11 +19,15 @@ export function Header(){
 
   async function Logout(){
 		await api.patch('/users/logout')
-    socket.emit('imOnline', { 
-      user: parseJwt(getToken()).id, 
-      status: false, 
-    })
-    logout()
+    const token = getToken();
+    
+    if(token)
+      socket.emit('imOnline', { 
+        user: parseJwt(token).id, 
+        status: false, 
+      })
+
+    removeToken()
     router('/SignIn');
 	}
 

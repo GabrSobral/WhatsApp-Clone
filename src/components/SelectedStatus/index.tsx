@@ -1,10 +1,10 @@
 import styles from './styles.module.scss'
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
+// import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 import { useStatus } from '../../contexts/StatusContext'
 import { HeaderSelectedStatus } from './HeaderSelectedStatus'
 
 export function SelectedStatus(){
-  const { selectedStatus, handleIndex, index } = useStatus()
+  const { selectedStatus, handleIndex, index } = useStatus() as any
   
   return(
     <div 
@@ -21,7 +21,7 @@ export function SelectedStatus(){
           onClick={() => handleIndex('previous')}
           className={styles.control}
         >
-          <FaAngleLeft size={32} fill="#ffffff"/>
+          {/* <FaAngleLeft size={32} fill="#ffffff"/> */}
         </button>
 
         <div 
@@ -49,7 +49,7 @@ export function SelectedStatus(){
           onClick={() => handleIndex('next')}
           className={styles.control}
         >
-          <FaAngleRight size={32} fill="#ffffff"/>
+          {/* <FaAngleRight size={32} fill="#ffffff"/> */}
         </button>
       </div>
 

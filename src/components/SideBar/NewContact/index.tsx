@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useState } from 'react'
 
 import api from '../../../services/api.js'
 import { SignInput } from '../../SignInput'
-import { SignButton } from '../../SignButton'
+// import { SignButton } from '../../SignButton'
 
 import { NewUserItem } from './NewUserItem'
 import styles from './styles.module.scss'
@@ -71,14 +71,14 @@ export function NewContact(){
           title="Write the new user phone number"
           bgColor="#FFFFFF"
         />
-
+{/* 
         <SignButton
           isFilled={!!phoneNumber}
           isLoading={isLoading}
           showIcon={false}
           title="Search"
           style={{ height: '50px' }}
-        />
+        /> */}
       </form>
      
       <div className={styles.new_users_list}>

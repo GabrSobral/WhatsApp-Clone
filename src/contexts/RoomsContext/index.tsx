@@ -1,54 +1,94 @@
-import { 
-	useContext, 
-	createContext, 
-	useEffect, 
-	useCallback, 
-	ReactNode } from 'react'
+import { useContext, createContext, useEffect, useCallback, ReactNode } from 'react'
 
 import { useAuth } from '../AuthContext'
+import { IRoomContextProps } from './roomsContext';
 
 import api from '../../services/api.js'
 import { socket } from "../../services/socket";
+
 import { IRoom } from '../../types/IRoom';
 import { IMessage } from '../../types/IMessage';
-import { IRoomContextProps } from './roomsContext';
+
 import { useRoomsActions } from '../../hooks/useRoomsActions';
-import { useSockets } from '../../hooks/useSockets';
 
 const RoomsContext = createContext({} as IRoomContextProps)
 
 export function RoomsProvider({ children }:{ children: ReactNode }) { 
 	const [ state, roomActions ] = useRoomsActions();	
 	const { myId } = useAuth();
-	useSockets(roomActions, myId);
 
 	useEffect(() => {
 		if(!myId) return;
 
-		window.onblur = () => {
-			roomActions.setIsFocused(false);
+		// window.onblur = () => {
+		// 	roomActions.setIsFocused(false);
+		// 	socket.emit('imOnline', { 
+		// 		user: myId, 
+		// 		status: false, 
+		// 		rooms: state.rooms
+		// 	});
+		// }
 
-			socket.emit('imOnline', { 
-				user: myId, 
-				status: false, 
-				rooms: state.rooms
-			});
-		}
-		window.onfocus = () => {
-			roomActions.setIsFocused(true);
-			socket.emit('imOnline', { 
-				user: myId, 
-				status: true, 
-				rooms: state.rooms
-			});
+		// window.onfocus = () => {
+		// 	roomActions.setIsFocused(true);
+		// 	socket.emit('imOnline', { 
+		// 		user: myId, 
+		// 		status: true, 
+		// 		rooms: state.rooms
+		// 	});
 			
-			if(state.selectedIndex){
-				const roomId = state.rooms[state.selectedIndex]._id;
-				socket.emit('viewUnreadMessages', { user: myId, room: roomId });
-				roomActions.readUnreadMessages(roomId);
-			}
-		}
+		// 	if(state.selectedIndex){
+		// 		const roomId = state.rooms[state.selectedIndex]._id;
+		// 		socket.emit('viewUnreadMessages', { user: myId, room: roomId });
+		// 		roomActions.readUnreadMessages(roomId);
+		// 	}
+		// }
 
+		socket.on('receive_fetch_rooms', ({ rooms }: any) => {
+			roomActions.setRoomsData(rooms)
+		});
+
+		socket.on('newMessage', ({ message, unreadMessages }: any) => {
+			console.log(myId);
+			console.log(message);
+			if(myId === message.user) 
+				return roomActions.updateMessageSent(message);
+			
+			roomActions.newMessage(message, unreadMessages, myId);
+		});
+
+		socket.on('receiveWritting', ({ writting, room, to }: any) => {
+			if(to === myId)
+				roomActions.receiveWritting(room, writting);
+		});
+
+		socket.on('receiveReadMessages', ({ room, user }: any) => {
+			if(user !== myId)
+				roomActions.receiveReadMessages(room);
+		});
+
+		socket.on('receiveImOnline', ({ user, status, room }: any) => {
+			if(myId !== user)
+				roomActions.receiveImOnline(room, status);
+		});
+
+		socket.on('receiveJoinNewRoom', ({ user, room }: any) => {
+			roomActions.addRoom(room);
+			socket.emit('joinNewRoom', { user_target: user, check: true});
+		});
+
+		socket.on('receiveRemoveRoom', ({ room, user }: any) => {
+			if(user === myId) return;
+				
+			roomActions.removeRoom(room);
+
+			socket.emit('removeRoom', { 
+				user_target: user,
+				check: true
+			});
+		});
+
+		return () => { socket.removeAllListeners() };
 	},[roomActions, state.selectedIndex, state.rooms, myId])
 
 	const handleFetchRooms = useCallback(async () => {
@@ -84,7 +124,6 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 			const { data } = await api.get<IMessage[]>(`room/messages/list/${room._id}`);
 			roomActions.setHasMessages(data, room);
 		}
-
 	},[roomActions, myId, state]);
 
 	const handleRemoveRoomFromScreen = useCallback((room: IRoom) => {
@@ -99,7 +138,6 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 			room: room._id,
 			check: false
 		})
-		return () => socket.removeAllListeners()
 	},[roomActions, state.selectedIndex, state.rooms, myId]);
 
 	return(
@@ -108,7 +146,9 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 				rooms: state.rooms,
 				isFocused: state.isFocused,
 				selectedIndex: state.selectedIndex,
-				selectedRoom: state.selectedIndex ? state.rooms[state.selectedIndex] : null,
+				selectedRoom: typeof state.selectedIndex === "number" ? 
+					state.rooms[state.	selectedIndex] : null,
+
 				roomActions,
 				handleSelectRoom,
 				handleFetchRooms,

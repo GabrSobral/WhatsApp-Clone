@@ -18,7 +18,6 @@ export type IActionsRooms = {
   setRoomsData: (rooms: IRoom[]) => void;
   addRoom: (room: IRoom) => void;
   selectRoom: (roomIndex: number | null) => void;
-  receiveJoinNewRoom: (newRoom: IRoom) => void;
   setIsFocused: (isFocused: boolean) => void;
   readUnreadMessages: (roomId: string) => void;
   receiveWritting: (roomId: string, isWritting: boolean) => void,
@@ -33,4 +32,6 @@ export type IActionsRooms = {
   addReferencedTo: (referencedTo: IReferencedTo) => void,
   removeRoom: (roomId: string) => void;
   selectMessageToAnswer: (message: IMessage) => void;
+  removeReferencedTo: (roomId: string) =>void;
+  setHasAllMessages: (roomId: string) => void;
 }
