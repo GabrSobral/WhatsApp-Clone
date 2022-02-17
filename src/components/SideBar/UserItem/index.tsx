@@ -13,7 +13,7 @@ type Props = {
 }
 
 export function UserItem({ room, index }: Props){
-  const { isFocused, handleSelectRoom } = useRooms()
+  const { isFocused, handleSelectRoom, selectedRoom } = useRooms()
   const { myId } = useAuth()
   const lastMessage = room.messages[room.messages.length - 1]
   const formattedMessageDate = room.messages.length !== 0 && 
