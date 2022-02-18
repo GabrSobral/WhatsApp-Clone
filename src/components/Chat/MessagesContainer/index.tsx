@@ -1,14 +1,13 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-// import { FaAngleDown } from 'react-icons/fa'
+import { useEffect, useRef, useState } from 'react'
 
-import { UserOne } from './UserOne'
-import { UserTwo } from './UserTwo'
-
-import styles from './styles.module.scss'
 import api from '../../../services/api'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useRooms } from '../../../contexts/RoomsContext'
 import { Loading } from './Loading'
+import { MyMessage } from './Messages/MyMessage'
+import { AnotherMessage } from './Messages/AnotherMessage'
+import styles from './styles.module.scss'
+import { ArrowDown } from '../../../images/arrow_down'
 
 export const MessagesContainer = () => {
   const container = useRef<HTMLDivElement>(null);
@@ -53,16 +52,16 @@ export const MessagesContainer = () => {
       if(selectedRoom?.messages.length  <= 49 && selectedRoom.hasMessages) 
         return roomActions.setHasAllMessages(selectedRoom._id);
 
-      setIsLoading(true);
-      const last_message = selectedRoom?.messages[0]._id;
-      api.get(`/room/messages/list/${selectedRoom._id}?last_message=${last_message}`)
-        .then(({ data }) => {
-          if(data.length !== 0) 
-            roomActions.addPrevMessages(data);
-          else
-            roomActions.setHasAllMessages(selectedRoom._id);
-        })
-        .finally(() => setIsLoading(false));
+      // setIsLoading(true);
+      // const last_message = selectedRoom?.messages[0]._id;
+      // api.get(`/room/messages/list/${selectedRoom._id}?last_message=${last_message}`)
+      //   .then(({ data }) => {
+      //     if(data.length !== 0) 
+      //       roomActions.addPrevMessages(data);
+      //     else
+      //       roomActions.setHasAllMessages(selectedRoom._id);
+      //   })
+      //   .finally(() => setIsLoading(false));
     }
     
     containerRef.addEventListener("scroll", onScroll);
@@ -74,16 +73,16 @@ export const MessagesContainer = () => {
     <div className={`${styles.container} ${!isFocused && styles.blur}`} ref={container}>
       { (!selectedRoom?.hasMessages || isLoading) && <Loading/> }
       { selectedRoom?.messages.map(message => 
-        myId !== message.user ? 
-          <UserTwo message={message} key={message._id}/> :
-          <UserOne message={message} key={message._id}/>
+        myId === message.user ? 
+          <MyMessage message={message} key={message._id}/> :
+          <AnotherMessage message={message} key={message._id}/>
       )}
 
       <div ref={scrollMessage}/>
       
       { isVisible && 
         <button type='button' onClick={scrollToDown} className={styles.go_to_down}> 
-          {/* <FaAngleDown size={15} color="#919191"/>  */}
+          <ArrowDown color="#A6ADA0" size={15}/>
         </button>
       }
     </div>

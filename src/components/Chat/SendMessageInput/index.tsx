@@ -12,6 +12,7 @@ import { socket } from "../../../services/socket"
 
 import styles from './styles.module.scss'
 import { IMessage } from '../../../types/IMessage'
+import { CloseSvg } from '../../../images/close'
 
 export function SendMessageInput(){
   const [ newMessage, setNewMessage ] = useState("");
@@ -72,18 +73,17 @@ export function SendMessageInput(){
             type="button" 
             onClick={() => roomActions.removeReferencedTo(selectedRoom?._id)}
           >
-            {/* <MdClose size={32} color="#404041"/> */}
-            X
+            <CloseSvg size={14} color="#54656F"/>
           </button>
         </div>
       }
 
       <form onSubmit={sendMessage}>
         <button type="button">
-          <EmojiSVG/>
+          <EmojiSVG color="#54656F"/>
         </button>
         <button type="button">
-          <FileSVG/>
+          <FileSVG color="#54656F"/>
         </button>
 
         <input 
@@ -94,7 +94,7 @@ export function SendMessageInput(){
         />
           
         <button type="button">
-          <AudioSVG/>
+          <AudioSVG color="#54656F"/>
         </button>
       </form>
     </div>

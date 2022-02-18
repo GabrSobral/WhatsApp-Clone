@@ -18,7 +18,7 @@ export function Slide({ show, children }: ISlideProps){
   };
 
   return (
-    shouldRender && (
+    shouldRender ? (
       <div
         className={`${styles.slide} `}
         style={{animation: `${show ? styles.slideIn : styles.slideOut} 0.5s`}}
@@ -26,6 +26,6 @@ export function Slide({ show, children }: ISlideProps){
       >
         {children}
       </div>
-    )
+    ) : <div/>
   );
 };

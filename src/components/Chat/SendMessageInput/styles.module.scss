@@ -48,8 +48,12 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      right: 1rem;
-      border: none
+      right: 1.5rem;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
     }
   }
 
