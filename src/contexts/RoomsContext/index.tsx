@@ -20,29 +20,44 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 	useEffect(() => {
 		if(!myId) return;
 
-		// window.onblur = () => {
-		// 	roomActions.setIsFocused(false);
-		// 	socket.emit('imOnline', { 
-		// 		user: myId, 
-		// 		status: false, 
-		// 		rooms: rooms
-		// 	});
-		// }
+		const roomsIds = rooms.map(item => item._id);
 
-		// window.onfocus = () => {
-		// 	roomActions.setIsFocused(true);
-		// 	socket.emit('imOnline', { 
-		// 		user: myId, 
-		// 		status: true, 
-		// 		rooms: rooms
-		// 	});
+		const onBlur = () => {
+			// roomActions.setIsFocused(false);
+			// socket.emit('imOnline', { 
+			// 	user: myId, 
+			// 	status: false, 
+			// 	rooms: roomsIds
+			// });
+		}
+
+		const onFocus = () => {
+			// roomActions.setIsFocused(true);
+			// socket.emit('imOnline', { 
+			// 	user: myId, 
+			// 	status: true, 
+			// 	rooms: roomsIds
+			// });
 			
-		// 	if(selectedIndex){
-		// 		const roomId = rooms[selectedIndex]._id;
-		// 		socket.emit('viewUnreadMessages', { user: myId, room: roomId });
-		// 		roomActions.readUnreadMessages(roomId);
-		// 	}
-		// }
+			// if(selectedIndex){
+			// 	const roomId = rooms[selectedIndex]._id;
+			// 	socket.emit('viewUnreadMessages', { user: myId, room: roomId });
+			// 	roomActions.readUnreadMessages(roomId);
+			// }
+		}
+
+		window.addEventListener("blur", onBlur);
+		window.addEventListener("focus", onFocus);
+
+		return () => {
+			window.removeEventListener("blur", onBlur);
+			window.removeEventListener("focus", onFocus);
+			socket.removeAllListeners()
+		}
+	},[roomActions, selectedIndex, myId, rooms])
+
+	useEffect(() => {
+		if(!myId) return;
 
 		socket.on('receive_fetch_rooms', ({ rooms }: any) => {
 			roomActions.setRoomsData(rooms)
@@ -152,7 +167,7 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 				isFocused: isFocused,
 				selectedIndex: selectedIndex,
 				selectedRoom: typeof selectedIndex === "number" ? 
-					rooms[	selectedIndex] : null,
+					rooms[selectedIndex] : null,
 
 				roomActions,
 				handleSelectRoom,
