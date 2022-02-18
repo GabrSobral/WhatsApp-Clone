@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useRooms } from "../../../contexts/RoomsContext";
 import { useStatus } from "../../../contexts/StatusContext";
 import { DetailSVG } from "../../../images/detail";
 import { MessageSVG } from "../../../images/message";
@@ -11,28 +12,29 @@ import { parseJwt } from "../../../utils/parseJWT";
 import styles from './styles.module.scss'
 
 export function Header(){
-  const router = useNavigate()
+  const navigate = useNavigate()
   const { actions } = useStatus()
+  const { rooms } = useRooms()
 
   async function Logout(){
-		await api.patch('/users/logout')
+    await api.patch('/users/logout')
     const token = getToken();
     
     if(token)
       socket.emit('imOnline', { 
         user: parseJwt(token).id, 
-        status: false, 
+        status: false,
+        rooms: rooms.map(item => item._id)
       })
 
     removeToken()
-    router('/SignIn');
+    navigate('/Authenticate');
 	}
 
   return(
     <header className={styles.container}>
       <div className={styles.user_img}>
-        {/* <img src="https://github.com/GabrSobral.png" alt="Profile image"/> */}
-        {/* <MdPerson size={24} color="#919191"/> */}
+        <img src="https://github.com/GabrSobral.png" alt="Profile image"/>
       </div>
       <div 
         className={styles.options_container} 
