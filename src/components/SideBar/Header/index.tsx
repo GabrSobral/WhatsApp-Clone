@@ -1,11 +1,8 @@
-// import { 
-//   MdDonutLarge, 
-//   MdMoreVert, 
-//   MdPerson, 
-//   MdSpeakerNotes 
-// } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useStatus } from "../../../contexts/StatusContext";
+import { DetailSVG } from "../../../images/detail";
+import { MessageSVG } from "../../../images/message";
+import { StatusSVG } from "../../../images/status";
 import api from "../../../services/api";
 import { socket } from "../../../services/socket";
 import { getToken, removeToken } from "../../../utils/handleToken";
@@ -42,15 +39,15 @@ export function Header(){
         title="Status (not developed yet)"
       >
         <button type='button' onClick={() => {}}>
-          {/* <MdDonutLarge size={23} color="#919191"/> */}
+          <StatusSVG size={24} color="#54656F"/>
         </button>
 
         <button type='button' title="">
-          {/* <MdSpeakerNotes size={23} color="#919191"/> */}
+          <MessageSVG size={20} color="#54656F"/>
         </button>
 
         <button type='button' onClick={() => {}} title="More options"> 
-          {/* <MdMoreVert size={23} color="#919191"/> */}
+          <DetailSVG size={20} color="#54656F"/>
 
           <div className={styles.popup_more}>
             <div className={styles.button} onClick={Logout}>

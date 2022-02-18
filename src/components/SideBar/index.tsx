@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, MutableRefObject } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { PlusSVG } from '../../images/plus'
 import { Slide } from '../Slide'
 
 import { Header } from './Header'
@@ -35,8 +36,7 @@ export function SideBar(){
         className={styles.add_contact}
         title="Add new contact"
       >
-        <span>+</span>
-        {/* <FiPlus size={32} stroke="#ffffff" /> */}
+        <PlusSVG size={22} color="#ffffff"/>
       </button>
 		</div>
   )

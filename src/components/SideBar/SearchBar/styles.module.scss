@@ -4,7 +4,8 @@
   width: 100%;
   min-height: 50px;
   padding: 0px 15px;
-  background-color: #f6f6f6;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--gray-100);
   
   > div{
     position: relative;
@@ -26,7 +27,8 @@
       border: none;
       outline: none;
       padding: 10px 0px 10px 45px;
-      color: var(--gray-700);
+      color: var(--text-dark);
+      background-color: var(--gray-100);
 
       &::placeholder{
         color: var(--gray-700);
