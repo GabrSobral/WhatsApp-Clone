@@ -10,20 +10,31 @@
 :root{
 	--white: #ffffff;
 	
-	--gray-50: #f8f8f8;
-	--gray-100: #EDEDED;
+	--gray-50: #EFEAE2;
+	--gray-100: #F0F2F5;
 	--gray-400: #d5d5d5;
 	--gray-600: #A6ADA0;
 	--gray-700: #a9a9a9;
-	--gray-800: #404041;
+	--gray-800: #54656F;
 	--gray-900: #242424;
 	--gray-950: #141414;
 	
+	--green-400: #42eb99;
 	--green-500: #51b786;
 	--green-550: #42996f;
 	--green-800: #06d755;
 
+	--soft-green: #D9FDD3;
+
+	--text-dark: #313A3F;
+
 	--black: #000000
+}
+
+body {
+	background-image: url('../images/background.png');
+  background-position: center;
+  background-color: var(--gray-50);
 }
 
 html{
