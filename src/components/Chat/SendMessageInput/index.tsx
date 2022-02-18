@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, FormEvent, useRef } from 'react'
 // import { MdClose } from 'react-icons/md'
 import { uniqueId } from 'lodash'
 
@@ -19,6 +19,7 @@ export function SendMessageInput(){
   const [ verify, setVerify ] = useState(false);
   const { selectedRoom, roomActions } = useRooms();
   const { myId } = useAuth();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function sendMessage(event: FormEvent){
     event.preventDefault()
@@ -60,6 +61,10 @@ export function SendMessageInput(){
       room: selectedRoom?._id
     });
   },[verify, selectedRoom])
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  },[selectedRoom?.referencedTo])
   
   return(
     <div className={styles.write_message}>
@@ -87,6 +92,7 @@ export function SendMessageInput(){
         </button>
 
         <input 
+          ref={inputRef}
           value={newMessage} 
           type='text' 
           placeholder='Type a message' 
