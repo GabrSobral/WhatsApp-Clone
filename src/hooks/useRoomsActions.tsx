@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react"
 import { IActionsRooms } from "../contexts/RoomsContext/roomsContext"
-import { socket } from "../services/socket"
 import { IMessage, IReferencedTo } from "../types/IMessage"
 import { IRoom } from "../types/IRoom"
 import { IUnreadMessage } from "../types/IUnreadMessage"
@@ -103,18 +102,15 @@ export const useRoomsActions = (): [ StateProps, IActionsRooms ] => {
 		},
 		newMessage: (message: IMessage, unreadMessages: IUnreadMessage, userId: string) => {
 			setState(prev => {
-				const selectedRoom = prev.selectedIndex ? prev.rooms[prev.selectedIndex]: null;
+				const selectedRoom = typeof prev.selectedIndex === "number" ? 
+					prev.rooms[prev.selectedIndex]: null;
 				const i = prev.rooms.findIndex(item => item._id === message.assignedTo);
-		
-				if(unreadMessages.to === prev.rooms[i]._id) {
-					if(!prev.isFocused || selectedRoom?._id !== message.assignedTo)
-						unreadMessages.user !== userId && prev.rooms[i].unreadMessages++;
-					else 
-						socket.emit('viewUnreadMessages', { 
-							user: userId, 
-							room: prev.rooms[i]._id 
-						});
-				}
+
+				if(unreadMessages.to !== prev.rooms[i]._id) return { ...prev };
+				
+				if(!prev.isFocused || selectedRoom?._id !== message.assignedTo)
+					unreadMessages.user !== userId && prev.rooms[i].unreadMessages++;
+				
 				prev.rooms[i].messages.push(message);
 				return { ...prev };
 			})

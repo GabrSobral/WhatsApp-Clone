@@ -14,7 +14,7 @@ import { useRoomsActions } from '../../hooks/useRoomsActions';
 const RoomsContext = createContext({} as IRoomContextProps)
 
 export function RoomsProvider({ children }:{ children: ReactNode }) { 
-	const [ state, roomActions ] = useRoomsActions();	
+	const [ { isFocused, rooms, selectedIndex }, roomActions ] = useRoomsActions();	
 	const { myId } = useAuth();
 
 	useEffect(() => {
@@ -25,7 +25,7 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		// 	socket.emit('imOnline', { 
 		// 		user: myId, 
 		// 		status: false, 
-		// 		rooms: state.rooms
+		// 		rooms: rooms
 		// 	});
 		// }
 
@@ -34,11 +34,11 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		// 	socket.emit('imOnline', { 
 		// 		user: myId, 
 		// 		status: true, 
-		// 		rooms: state.rooms
+		// 		rooms: rooms
 		// 	});
 			
-		// 	if(state.selectedIndex){
-		// 		const roomId = state.rooms[state.selectedIndex]._id;
+		// 	if(selectedIndex){
+		// 		const roomId = rooms[selectedIndex]._id;
 		// 		socket.emit('viewUnreadMessages', { user: myId, room: roomId });
 		// 		roomActions.readUnreadMessages(roomId);
 		// 	}
@@ -49,11 +49,16 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		});
 
 		socket.on('newMessage', ({ message, unreadMessages }: any) => {
-			console.log(myId);
-			console.log(message);
 			if(myId === message.user) 
 				return roomActions.updateMessageSent(message);
 			
+			if(typeof selectedIndex === "number" && 
+				(isFocused && rooms[selectedIndex]?._id === message.assignedTo))
+				socket.emit('viewUnreadMessages', { 
+					user: myId, 
+					room: message.assignedTo
+				});
+
 			roomActions.newMessage(message, unreadMessages, myId);
 		});
 
@@ -89,7 +94,7 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		});
 
 		return () => { socket.removeAllListeners() };
-	},[roomActions, state.selectedIndex, state.rooms, myId])
+	},[roomActions, selectedIndex, rooms, myId])
 
 	const handleFetchRooms = useCallback(async () => {
 		if(myId)
@@ -110,10 +115,10 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 	},[roomActions, myId]);
 
 	const handleSelectRoom = useCallback(async (index: number) => {
-		if(index === state.selectedIndex || (typeof index !== "number")) return;
+		if(index === selectedIndex || (typeof index !== "number")) return;
 		roomActions.selectRoom(index);
 	
-		const room = state.rooms[index];
+		const room = rooms[index];
 
 		if(room?.unreadMessages !== 0) {
 			socket.emit('viewUnreadMessages', { user: myId, room: room._id });
@@ -124,11 +129,11 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 			const { data } = await api.get<IMessage[]>(`room/messages/list/${room._id}`);
 			roomActions.setHasMessages(data, room);
 		}
-	},[roomActions, myId, state]);
+	},[roomActions, myId, rooms, selectedIndex]);
 
 	const handleRemoveRoomFromScreen = useCallback((room: IRoom) => {
-		if(!state.selectedIndex) return;
-		if (state.rooms[state.selectedIndex]._id === room._id)
+		if(!selectedIndex) return;
+		if (rooms[selectedIndex]._id === room._id)
 			roomActions.selectRoom(null);
 
 		roomActions.removeRoom(room._id);
@@ -138,16 +143,16 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 			room: room._id,
 			check: false
 		})
-	},[roomActions, state.selectedIndex, state.rooms, myId]);
+	},[roomActions, selectedIndex, rooms, myId]);
 
 	return(
 		<RoomsContext.Provider 
 			value={{
-				rooms: state.rooms,
-				isFocused: state.isFocused,
-				selectedIndex: state.selectedIndex,
-				selectedRoom: typeof state.selectedIndex === "number" ? 
-					state.rooms[state.	selectedIndex] : null,
+				rooms: rooms,
+				isFocused: isFocused,
+				selectedIndex: selectedIndex,
+				selectedRoom: typeof selectedIndex === "number" ? 
+					rooms[	selectedIndex] : null,
 
 				roomActions,
 				handleSelectRoom,

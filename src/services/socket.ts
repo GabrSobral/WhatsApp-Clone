@@ -1,4 +1,4 @@
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 
 const uri = import.meta.env.VITE_API_URL?.toString() || "";
 
