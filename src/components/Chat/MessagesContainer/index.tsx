@@ -52,16 +52,16 @@ export const MessagesContainer = () => {
       if(selectedRoom?.messages.length  <= 49 && selectedRoom.hasMessages) 
         return roomActions.setHasAllMessages(selectedRoom._id);
 
-      // setIsLoading(true);
-      // const last_message = selectedRoom?.messages[0]._id;
-      // api.get(`/room/messages/list/${selectedRoom._id}?last_message=${last_message}`)
-      //   .then(({ data }) => {
-      //     if(data.length !== 0) 
-      //       roomActions.addPrevMessages(data);
-      //     else
-      //       roomActions.setHasAllMessages(selectedRoom._id);
-      //   })
-      //   .finally(() => setIsLoading(false));
+      setIsLoading(true);
+      const last_message = selectedRoom?.messages[0]._id;
+      api.get(`/room/messages/list/${selectedRoom._id}?last_message=${last_message}`)
+        .then(({ data }) => {
+          if(data.length !== 0) 
+            roomActions.addPrevMessages(data);
+          else
+            roomActions.setHasAllMessages(selectedRoom._id);
+        })
+        .finally(() => setIsLoading(false));
     }
     
     containerRef.addEventListener("scroll", onScroll);

@@ -8,13 +8,14 @@ import { AudioSVG } from '../../../images/audio'
 
 import { useRooms } from '../../../contexts/RoomsContext'
 import { useAuth } from '../../../contexts/AuthContext'
-import { socket } from "../../../services/socket"
 
 import styles from './styles.module.scss'
 import { IMessage } from '../../../types/IMessage'
 import { CloseSvg } from '../../../images/close'
+import { useSocket } from '../../../contexts/SocketContext'
 
 export function SendMessageInput(){
+  const { socket } = useSocket();
   const [ newMessage, setNewMessage ] = useState("");
   const [ verify, setVerify ] = useState(false);
   const { selectedRoom, roomActions } = useRooms();

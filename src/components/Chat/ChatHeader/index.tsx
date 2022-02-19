@@ -2,9 +2,9 @@
 
 import { useAuth } from '../../../contexts/AuthContext'
 import { useRooms } from '../../../contexts/RoomsContext'
+import { useSocket } from '../../../contexts/SocketContext'
 
 import api from '../../../services/api'
-import { socket } from '../../../services/socket'
 import { formatLastSeen } from '../../../utils/formatLastSeen'
 
 import styles from './styles.module.scss'
@@ -12,6 +12,7 @@ import styles from './styles.module.scss'
 export function ChatHeader(){
   const { selectedRoom, handleRemoveRoomFromScreen } = useRooms()
   const { myId } = useAuth()
+  const { socket } = useSocket();
 
   const formattedDate = selectedRoom?.user[0] &&
   formatLastSeen(new Date(selectedRoom?.user[0].lastOnline))
