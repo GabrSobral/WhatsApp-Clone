@@ -45,12 +45,14 @@ export function UserItem({ room, index }: Props){
             </div>
           }
 
-          {room.unreadMessages !== 0 && 
-            <span className={styles.message_counter}>{room?.unreadMessages}</span>}
+          <div style={{ display: "flex", gap: '0.3rem' }}>
+            {room.unreadMessages !== 0 && 
+              <span className={styles.message_counter}>{room?.unreadMessages}</span>}
 
-          <button type="button" className={styles.details} onClick={()=> alert()}>
-            <ArrowDown size={15} color="#b1b1b1"/>
-          </button>
+            <button type="button" className={styles.details} onClick={()=> alert()}>
+              <ArrowDown size={15} color="#b1b1b1"/>
+            </button>
+          </div>
         </div>
       </div>
     </div>

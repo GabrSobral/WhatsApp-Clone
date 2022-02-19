@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useRooms } from "../../../contexts/RoomsContext";
+import { useSocket } from "../../../contexts/SocketContext";
 import { useStatus } from "../../../contexts/StatusContext";
 import { DetailSVG } from "../../../images/detail";
 import { MessageSVG } from "../../../images/message";
 import { StatusSVG } from "../../../images/status";
 import api from "../../../services/api";
-import { socket } from "../../../services/socket";
 import { getToken, removeToken } from "../../../utils/handleToken";
 import { parseJwt } from "../../../utils/parseJWT";
 
@@ -15,6 +15,7 @@ export function Header(){
   const navigate = useNavigate()
   const { actions } = useStatus()
   const { rooms } = useRooms()
+  const { socket } = useSocket();
 
   async function Logout(){
     await api.patch('/users/logout')
@@ -40,7 +41,7 @@ export function Header(){
         className={styles.options_container} 
         title="Status (not developed yet)"
       >
-        <button type='button' onClick={() => {}}>
+        <button type='button' onClick={() => console.log()}>
           <StatusSVG size={24} color="#54656F"/>
         </button>
 
@@ -48,7 +49,7 @@ export function Header(){
           <MessageSVG size={20} color="#54656F"/>
         </button>
 
-        <button type='button' onClick={() => {}} title="More options"> 
+        <button type='button' onClick={() => console.log()} title="More options"> 
           <DetailSVG size={20} color="#54656F"/>
 
           <div className={styles.popup_more}>
