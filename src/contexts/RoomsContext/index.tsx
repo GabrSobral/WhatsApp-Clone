@@ -4,23 +4,35 @@ import { useAuth } from '../AuthContext'
 import { IRoomContextProps } from './roomsContext';
 
 import api from '../../services/api.js'
-import { socket } from "../../services/socket";
 
 import { IRoom } from '../../types/IRoom';
 import { IMessage } from '../../types/IMessage';
 
 import { useRoomsActions } from '../../hooks/useRoomsActions';
+import { useSocket } from '../SocketContext';
 
 const RoomsContext = createContext({} as IRoomContextProps)
 
 export function RoomsProvider({ children }:{ children: ReactNode }) { 
 	const [ { isFocused, rooms, selectedIndex }, roomActions ] = useRoomsActions();	
 	const { myId } = useAuth();
+	const { socket } = useSocket();
+
+	useEffect(() => {
+		if(rooms.length === 0) return;
+
+		const roomsIds = rooms.map(item => item._id)
+		socket.emit('imOnline', { 
+			user: myId, 
+			status: true, 
+			rooms: roomsIds
+		});
+	},[socket, rooms])
 
 	useEffect(() => {
 		if(!myId) return;
 
-		const roomsIds = rooms.map(item => item._id);
+		// const roomsIds = rooms.map(item => item._id);
 
 		const onBlur = () => {
 			// roomActions.setIsFocused(false);
@@ -52,13 +64,12 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		return () => {
 			window.removeEventListener("blur", onBlur);
 			window.removeEventListener("focus", onFocus);
-			socket.removeAllListeners()
 		}
-	},[roomActions, selectedIndex, myId, rooms])
+	},[roomActions, selectedIndex, myId, rooms, socket])
 
 	useEffect(() => {
 		if(!myId) return;
-
+		
 		socket.on('receive_fetch_rooms', ({ rooms }: any) => {
 			roomActions.setRoomsData(rooms)
 		});
@@ -73,6 +84,12 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 					user: myId, 
 					room: message.assignedTo
 				});
+			else if (Notification.permission === 'granted') {
+				const notification = new Notification(message.user, {
+					body: message.message,
+					icon: "https://github.com/diego3g.png",
+				});
+			}
 
 			roomActions.newMessage(message, unreadMessages, myId);
 		});
@@ -109,7 +126,7 @@ export function RoomsProvider({ children }:{ children: ReactNode }) {
 		});
 
 		return () => { socket.removeAllListeners() };
-	},[roomActions, selectedIndex, rooms, myId])
+	},[roomActions, selectedIndex, rooms, myId, socket])
 
 	const handleFetchRooms = useCallback(async () => {
 		if(myId)
