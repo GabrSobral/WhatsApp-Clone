@@ -5,10 +5,10 @@ import { AuthProvider } from './contexts/AuthContext'
 import "./styles/global.scss"
 
 ReactDOM.render(
-  <AuthProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </AuthProvider>,
+  <BrowserRouter>
+    <AuthProvider>
+        <App />
+    </AuthProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 )
