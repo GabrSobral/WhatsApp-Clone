@@ -4,7 +4,7 @@ import { Slide } from '../Slide'
 
 import { Header } from './Header'
 import { NewContact } from './NewContact'
-import { RoomsList } from './RoomsList'
+import { RoomsList } from './ContactList'
 
 import styles from './styles.module.scss'
 
@@ -28,7 +28,7 @@ export function SideBar(){
       <RoomsList/>
 
       <Slide show={showNewContact}>
-        <NewContact/> 
+        <NewContact close={() => setShowNewContact(false)}/> 
       </Slide>
 
       <button 

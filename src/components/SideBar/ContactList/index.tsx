@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { useRooms } from '../../../contexts/RoomsContext'
+import { useContact } from '../../../contexts/ContactContext'
 import { SearchBar } from '../SearchBar'
 import { UserItem } from '../UserItem'
 import styles from './styles.module.scss'
 
 export function RoomsList(){
-  const { rooms } = useRooms()
+  const { contacts } = useContact()
   const [ search, setSearch ] = useState('')
 
   return(
@@ -15,8 +15,8 @@ export function RoomsList(){
         setSearch={(value) => setSearch(value)}
         placeholder="Search your contacts"
       />
-      { rooms.map((room, index) => 
-        <UserItem key={room._id} room={room} index={index}/> )}
+      { contacts.map((contact, index) => 
+        <UserItem key={contact.id} contact={contact} index={index}/> )}
     </div>
   )
 }

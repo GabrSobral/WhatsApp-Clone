@@ -1,14 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import { Authenticate } from './pages/Authenticate';
-import { initDB } from 'react-indexed-db';
 
 import { Main } from './pages/Main/';
 import { RoomsProvider } from './contexts/RoomsContext';
 import { SocketProvider } from './contexts/SocketContext';
-
-import { DBConfig } from './services/DBConfig';
-
-initDB(DBConfig);
+import { ContactProvider } from './contexts/ContactContext';
 
 function App() {
   return (
@@ -17,9 +13,11 @@ function App() {
 
       <Route path="/" element={
         <SocketProvider>
-          <RoomsProvider>
-            <Main/>
-          </RoomsProvider>
+          <ContactProvider>
+            <RoomsProvider>
+              <Main/>
+            </RoomsProvider>
+          </ContactProvider>
         </SocketProvider>
       }/>
     </Routes>

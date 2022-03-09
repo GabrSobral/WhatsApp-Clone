@@ -1,103 +1,56 @@
-import { FormEvent, useEffect, useState } from 'react'
-// import { FaWhatsapp } from 'react-icons/fa'
+import { FormEvent, useState } from 'react'
 
-import api from '../../../services/api.js'
 import { SignInput } from '../../SignInput'
-// import { SignButton } from '../../SignButton'
+import { ConfirmButton } from '../../ConfirmButton/index'
 
-import { NewUserItem } from './NewUserItem'
+import { db, IContactsSchema } from '../../../services/DBConfig'
+
 import styles from './styles.module.scss'
-import { useRooms } from '../../../contexts/RoomsContext'
-import { useAuth } from '../../../contexts/AuthContext.jsx'
-import { IUser } from '../../../types/IUser.js'
+import { useContact } from '../../../contexts/ContactContext'
 
-export function NewContact(){
-  const { handleAddNewRoom } = useRooms()
-  const { myId } = useAuth()
-  const [ phoneNumber, setPhoneNumber ] = useState('')
-  const [ message, setMessage ] = useState('')
-  const [ newUsers, setNewUsers ] = useState<IUser[]>([])
+type NewContactProps = {
+  close: () => void;
+}
+
+export function NewContact({ close }: NewContactProps){
+  const { addNewContact } = useContact();
+  const [ phoneNumber, setPhoneNumber ] = useState('');
+  const [ contactName, setContactName ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false)
-  const [ isSearched, setIsSearched ] = useState(false)
 
-  useEffect(() => {
-    if(!phoneNumber) {
-      setNewUsers([]);
-      setIsSearched(false)
-    }
-  },[phoneNumber])
-
-  useEffect(() => {
-    isSearched ? 
-      setMessage(`Oops.. No user was found with this phone number, try to invite your friends to use this app!`) : 
-      setMessage(`Search for new users to start to talk!`);
-  },[ isSearched ])
-
-  async function handleFetchNewUsers(event: FormEvent){
+  async function AddContact(event: FormEvent){
     event.preventDefault();
+
+    const data: IContactsSchema = {
+      display_name: contactName,
+      jid: `${phoneNumber}@whatsapp.clone`,
+      number: phoneNumber,
+    };
+
     setIsLoading(true);
-    const { data } = await api.post<IUser[]>("/users/show", { phoneNumber });
-    
-    if(data[0]._id !== myId)
-      setNewUsers(data);
-
-    setIsLoading(false);
-    setIsSearched(true);
-  }
-
-  async function handleCreateNewRoom(user_id: string){
-    try{
-      const { data } = await api.post(`/room/new/${user_id}`);
-      handleAddNewRoom(data);
-    } catch(error: any){
-      if(error.response.data.error === "Room already exists") {
-        setMessage('You already added this user!');
-        setNewUsers([]);
-        return;
-      }
-      setMessage(error.response.data.error);
-      setNewUsers([]);
-    }
+    // fetch new user data
+    const id = await db.contacts.add(data);
+    addNewContact({ id: Number(id), ...data });
+    close();
   }
 
   return(
     <div className={styles.container}>
-      <h2>Search for new users</h2>
-      <form onSubmit={handleFetchNewUsers}>
+      <h2>Add new user</h2>
+      <form onSubmit={AddContact}>
         <SignInput
-          data={phoneNumber}
+          data={phoneNumber} bgColor="#FFFFFF"
+          type="number"title="Write the new user phone number"
           setData={(value: string) => setPhoneNumber(value)}
-          type="number"
-          title="Write the new user phone number"
-          bgColor="#FFFFFF"
         />
-{/* 
-        <SignButton
-          isFilled={!!phoneNumber}
-          isLoading={isLoading}
-          showIcon={false}
-          title="Search"
-          style={{ height: '50px' }}
-        /> */}
+        <SignInput
+          data={contactName} bgColor="#FFFFFF"
+          type="text" title="Write the contact name"
+          setData={(value: string) => setContactName(value)}
+        />
+
+        <ConfirmButton type="submit" isLoading={isLoading} text="Add"/>
       </form>
-     
-      <div className={styles.new_users_list}>
-          { newUsers.length !== 0 ? newUsers.map(item =>
-            <NewUserItem
-              key={item._id}
-              name={item.name}
-              phoneNumber={item.phoneNumber}
-              last_seen={item.lastOnline}
-              isOnline={item.isOnline}
-              onClick={async () => await handleCreateNewRoom(item._id)}
-            />
-          ) : (
-            <div className={styles.not_user_found}>
-              {/* <FaWhatsapp size="6rem" fill="#d5d5d5"/> */}
-              <span>{message}</span>
-            </div>
-          )}
-      </div>
     </div>
   )
 }

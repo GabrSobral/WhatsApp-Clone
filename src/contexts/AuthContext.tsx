@@ -1,54 +1,35 @@
 import { useState, useContext, createContext, useEffect, ReactNode } from "react";
-import { AxiosRequestConfig, AxiosError } from "axios";
 
-import { getToken, setToken } from "../utils/handleToken";
-import { parseJwt } from "../utils/parseJWT.js";
-
-import api from "../services/api";
-import { IUser } from "../types/IUser";
+import { db, IMeSchema } from "../services/DBConfig";
+import { useLiveQuery } from "dexie-react-hooks";
 
 type AuthContextProps = {
-  signInOrSignUp: (phoneNumber: string, name?: string) => Promise<IAuthResponse>;
-  myId: string;
-}
-
-type IAuthResponse = {
-  user: IUser;
-  token: string;
+  signUp: (phoneNumber: string, name: string) => Promise<void>;
+  user: IMeSchema | null;
 }
 
 const AuthContext = createContext({} as AuthContextProps);
 
 export const AuthProvider = ({ children }:{ children: ReactNode}) => {
-  const [ myId, setMyId ] = useState('');
+  const myData = useLiveQuery(() => db.me.toArray());
+  const [ user, setUser ] = useState<IMeSchema | null>(null);
 
   useEffect(() => {
-    const myToken = getToken();
-    if(myToken)
-      setMyId(parseJwt(myToken).id);
-  },[]);
+    if(myData && myData[0]) setUser(myData[0]);
+  },[myData]);
 
-  const signInOrSignUp = (phoneNumber: string, name?: string): Promise<IAuthResponse> => {
-    const url = typeof name === "string" ? '/users/register' : '/users/authenticate';
-    return new Promise((resolve, reject) => {
-      api.post<IAuthResponse>(url, { phoneNumber, name })
-      .then(({ data }) => {
-        setToken(data.token);
-        setMyId(parseJwt(data.token).id);
-        
-        api.interceptors.request.use((config: AxiosRequestConfig) => {
-          if(config.headers)
-          config.headers.Authorization = `Bearer ${data.token}`;
-          return config;
-        });
-        resolve(data);
-      })
-      .catch((error: AxiosError) => reject(error.response?.data.error))
-    });
+  const signUp = async (phoneNumber: string, name: string) => {
+    const data: IMeSchema = { 
+      wa_name: name, 
+      number: phoneNumber, 
+      jid: `${phoneNumber}@whatsapp.clone`
+    };
+    await db.me.add(data);  // DATABASE TRANSACTION
+    setUser(data);          // SET USER TO APPLICATION STATE
   }
 
   return(
-    <AuthContext.Provider value={{ signInOrSignUp, myId }} >
+    <AuthContext.Provider value={{ signUp, user }} >
       {children}
     </AuthContext.Provider>
   )

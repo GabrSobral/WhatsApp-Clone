@@ -1,0 +1,31 @@
+.button{
+  width: 100%;
+  height: 70px;
+  border-radius: 7px;
+  background-color: #51b786;
+  color: #fff;
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  transition : 0.3s ease;
+  cursor: pointer;
+
+  &:hover{
+    opacity: 0.8;
+  }
+
+  &:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover{
+      opacity: 0.6;
+    }
+  }
+}

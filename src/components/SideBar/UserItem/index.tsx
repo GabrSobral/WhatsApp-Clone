@@ -2,52 +2,51 @@ import { format } from 'date-fns'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useRooms } from '../../../contexts/RoomsContext'
 import { SendingSVG } from '../../../images/sending'
-import { IRoom } from '../../../types/IRoom'
 import { PersonSVG } from '../../../images/person'
 import { ArrowDown } from '../../../images/arrow_down'
 import { DoubleCheckSVG } from '../../../images/double_check'
 
 import styles from './styles.module.scss'
+import { IContactsSchema } from '../../../services/DBConfig'
 
 type Props = {
-  room: IRoom;
+  contact: IContactsSchema;
   index: number;
 }
 
-export function UserItem({ room, index }: Props){
+export function UserItem({ contact, index }: Props){
   const { isFocused, handleSelectRoom, selectedRoom } = useRooms()
-  const { myId } = useAuth()
-  const lastMessage = room.messages[room.messages.length - 1]
-  const formattedMessageDate = room.messages.length !== 0 && 
-    format(new Date(lastMessage.timestamp), "HH:mm")
+  // const lastMessage = room.messages[room.messages.length - 1]
+  // const formattedMessageDate = room.messages.length !== 0 && 
+  //   format(new Date(lastMessage.timestamp), "HH:mm")
 
   return(
-    <div onClick={() => handleSelectRoom(index)} className={`${styles.user_container} 
-        ${selectedRoom?._id === room._id && styles.active}`}>
-      <div className={`${styles.user_img} ${room.user[0].isOnline && styles.online}`}>  
-        <PersonSVG color={room.user[0].isOnline ? '#51b786':'#b5b5b5'}/> 
+    <div onClick={() => handleSelectRoom(index)} className={`${styles.user_container}`}>
+      <div className={`${styles.user_img} ${styles.online}`}>  
+        <PersonSVG color={'#b5b5b5'}/> 
       </div>
 
       <div className={styles.container_char}>
         <div className={styles.name_and_time}>
-          <span>{room.user[0].name}</span>
-          <span>{formattedMessageDate}</span>
+          <span>{contact.display_name}</span>
+          <span>13:03</span>
         </div>
 
         <div className={styles.message_and_counter}>
-          { room.isWritting ? 
+          {/* { room.isWritting ? 
             <span className={styles.writting}>typing...</span> : 
             <div className={`${styles.lastMessage} ${!isFocused && styles.blur}`}>
               {lastMessage?.user === myId && (lastMessage.received ?
                 <DoubleCheckSVG color={lastMessage?.viewed ? "#30B1E7":"#b1b1b1"} size={18}/> : 
-                <SendingSVG color="#b1b1b1"/>)}
-              <span>{lastMessage?.message}</span>
-            </div>
-          }
+                <SendingSVG color="#b1b1b1"/>)} */}
+              <span>teste</span>
+            {/* </div>
+          } */}
 
           <div style={{ display: "flex", gap: '0.3rem' }}>
-            {room.unreadMessages !== 0 && 
-              <span className={styles.message_counter}>{room?.unreadMessages}</span>}
+            {/* {room.unreadMessages !== 0 &&  */}
+              <span className={styles.message_counter}>1</span>
+            {/* } */}
 
             <button type="button" className={styles.details} onClick={()=> alert()}>
               <ArrowDown size={15} color="#b1b1b1"/>
